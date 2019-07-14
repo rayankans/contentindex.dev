@@ -63,11 +63,22 @@ export default class TrendingContentView extends React.Component {
     this.state = {
       focused: props.focused,
       phase: Phase.LOADING,
+      result: null,
     };
   }
 
   componentDidMount() {
-    setTimeout(() => this.setState({phase: Phase.FETCH_ERROR}), 3000);
+    fetch('/api?asdfsdf')
+      .then(response => {
+      if (response.status >= 400) {
+        throw Error('Failed to Fetch');
+      }
+      return response.json();
+    }).then(json => {
+      this.setState({result: JSON.parse(json), phase: Phase.FETCHED});
+    }).catch(e => {
+      this.setState({phase: Phase.FETCH_ERROR});
+    });
   }
 
   render() {
@@ -76,7 +87,7 @@ export default class TrendingContentView extends React.Component {
       case Phase.LOADING:
         return <Loading />;
       case Phase.FETCHED:
-        return <h1> Fetched! </h1>;
+        return <h1> {JSON.stringify(this.state.result, undefined, 2)} </h1>;
       case Phase.FETCH_ERROR:
         return <FetchError />
       default:
