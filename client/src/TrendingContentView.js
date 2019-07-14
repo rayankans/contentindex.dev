@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 
+import ContentCardGrid from './ContentCardGrid';
+
 const useStyles = makeStyles(theme => ({
   progress: {
     margin: theme.spacing(8),
@@ -67,7 +69,8 @@ export default class TrendingContentView extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await new Promise(r => setTimeout(r, 1000));  // fake delay to look cool.
     fetch('/api?asdfsdf')
       .then(response => {
       if (response.status >= 400) {
@@ -75,7 +78,9 @@ export default class TrendingContentView extends React.Component {
       }
       return response.json();
     }).then(json => {
-      this.setState({result: JSON.parse(json), phase: Phase.FETCHED});
+      if (json.status !== 'ok')
+        throw new Error('Failed to Fetch');
+      this.setState({result: json, phase: Phase.FETCHED});
     }).catch(e => {
       this.setState({phase: Phase.FETCH_ERROR});
     });
@@ -87,7 +92,7 @@ export default class TrendingContentView extends React.Component {
       case Phase.LOADING:
         return <Loading />;
       case Phase.FETCHED:
-        return <h1> {JSON.stringify(this.state.result, undefined, 2)} </h1>;
+        return <ContentCardGrid articles={this.state.result.articles} />
       case Phase.FETCH_ERROR:
         return <FetchError />
       default:
