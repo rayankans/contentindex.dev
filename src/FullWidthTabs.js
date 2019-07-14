@@ -7,9 +7,17 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 
+import TrendingContentView from './TrendingContentView.js';
+
 function TabContainer({ children, dir }) {
+  const style = {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 8 * 3,
+  };
+
   return (
-    <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+    <Typography component="div" dir={dir} style={style}>
       {children}
     </Typography>
   );
@@ -60,8 +68,12 @@ export default function FullWidthTabs() {
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        <TabContainer dir={theme.direction}>Item One</TabContainer>
-        <TabContainer dir={theme.direction}>Item Two</TabContainer>
+        <TabContainer dir={theme.direction}>
+          <TrendingContentView style={{marginLeft: 'auto', marginRight: 'auto'}} focused={value === 0}/>
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+          Item Two
+        </TabContainer>
       </SwipeableViews>
     </div>
   );
