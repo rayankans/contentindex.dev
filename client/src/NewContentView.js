@@ -63,7 +63,6 @@ export default class NewContentView extends React.Component {
     super(props);
 
     this.state = {
-      focused: props.focused,
       phase: Phase.LOADING,
       result: null,
     };
@@ -84,8 +83,6 @@ export default class NewContentView extends React.Component {
   }
 
   render() {
-    if (!this.state.focused) return;
-
     switch (this.state.phase) {
       case Phase.LOADING:
         return <Loading />;

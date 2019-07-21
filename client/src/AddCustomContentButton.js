@@ -39,10 +39,10 @@ export default function AddContentButton(props) {
     <>
       <Zoom
         key='primary'
-        in={props.focused}
+        in
         timeout={transitionDuration}
         style={{
-          transitionDelay: `${props.focused ? transitionDuration.exit : 0}ms`,
+          transitionDelay: `${transitionDuration.exit}ms`,
         }}
         unmountOnExit
       >
