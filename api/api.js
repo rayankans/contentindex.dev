@@ -17,7 +17,9 @@ async function fetchRedditPosts(subreddit) {
   return cats.filter(cat => cat.data.thumbnail.startsWith('http')).map(cat => ({
     title: cat.data.title,
     description: cat.data.selftext ? cat.data.selftext : getDescriptionForSubreddit(subreddit),
-    urlToImage: cat.data.thumbnail,
+    thumbnail: cat.data.thumbnail,
+    url: cat.data.url,
+    permalink: `https://reddit.com${cat.data.permalink}`,
   }));
 }
 

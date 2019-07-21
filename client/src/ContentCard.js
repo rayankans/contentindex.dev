@@ -39,10 +39,13 @@ export default function ContentCard(props) {
 
   return (
     <Card className={classes.card}>
-      <CardActionArea className={classes.actionarea}>
+      <CardActionArea 
+          className={classes.actionarea}
+          onClick={() => window.open(props.article.permalink, '_blank')}
+      >
         <CardMedia
           className={classes.media}
-          image={props.article.urlToImage}
+          image={props.article.thumbnail}
           title={props.article.title}
         />
         <CardContent className={classes.metadata}>
