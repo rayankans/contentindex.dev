@@ -11,15 +11,35 @@ function getDescriptionForSubreddit(subreddit) {
   }
 }
 
+function getUrlAndType(post) {
+  if (post.data.media) {
+    if (!post.data.media.reddit_video)
+      return null;
+    return {
+      url: post.data.media.reddit_video.fallback_url,
+      type: 'video',
+    };
+  }
+
+  if (!post.data.url.includes('i.redd.it'))
+    return null;
+
+  return {
+    url: post.data.url,
+    type: 'photo',
+  };
+}
+
 async function fetchRedditPosts(subreddit) {
   const response = await fetch(`https://reddit.com/${subreddit}.json`);
   const cats = (await response.json()).data.children;
-  return cats.filter(cat => cat.data.thumbnail.startsWith('http')).map(cat => ({
+  return cats.filter(cat => cat.data.thumbnail.startsWith('http'))
+             .filter(cat => getUrlAndType(cat)).map(cat => ({
     title: cat.data.title,
     description: cat.data.selftext ? cat.data.selftext : getDescriptionForSubreddit(subreddit),
     thumbnail: cat.data.thumbnail,
-    url: cat.data.url,
     permalink: `https://reddit.com${cat.data.permalink}`,
+    ...getUrlAndType(cat),
   }));
 }
 
@@ -33,7 +53,7 @@ router.get('/', async (req, res) => {
     cats = cats.sort(() => Math.random() < 0.5 ? 1 : -1);   // basically a shuffle.
     res.json(cats.slice(0, 20));
   } catch (e) {
-    res.status(501).send();
+    res.status(501).send(e.message);
   }
 });
 
