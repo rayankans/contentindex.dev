@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -10,10 +11,26 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   card: {
-    maxWidth: 345,
+    display: 'flex',
+    justifyContent: 'left',
+    width: 600,
+    height: 150,
+  },
+  actionarea: {
+    display: 'flex',
+    flex: '1 1 auto',
+    justifyContent: 'left',
   },
   media: {
-    height: 140,
+    flex: '0 0 150px',
+    height: 150,
+  },
+  metadata: {
+    flex: '1 1 auto',
+  },
+  actions: {
+    flex: '0 1 auto',
+    verticalAlign: 'bottom',
   },
 });
 
@@ -22,13 +39,13 @@ export default function ContentCard(props) {
 
   return (
     <Card className={classes.card}>
-      <CardActionArea>
+      <CardActionArea className={classes.actionarea}>
         <CardMedia
           className={classes.media}
           image={props.article.urlToImage}
           title={props.article.title}
         />
-        <CardContent>
+        <CardContent className={classes.metadata}>
           <Typography gutterBottom variant="h5" component="h2">
             {props.article.title}
           </Typography>
@@ -37,14 +54,11 @@ export default function ContentCard(props) {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary">
-          Share
+      <CardActions className={classes.actions}>
+        <Button size="large" color="primary">
+          <AddIcon />
         </Button>
-        <Button size="small" color="primary">
-          Learn More
-        </Button>
-      </CardActions>
+       </CardActions>
     </Card>
   );
 }

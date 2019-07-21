@@ -78,8 +78,6 @@ export default class NewContentView extends React.Component {
       }
       return response.json();
     }).then(json => {
-      if (json.status !== 'ok')
-        throw new Error('Failed to Fetch');
       this.setState({result: json, phase: Phase.FETCHED});
     }).catch(e => {
       this.setState({phase: Phase.FETCH_ERROR});
@@ -93,7 +91,7 @@ export default class NewContentView extends React.Component {
       case Phase.LOADING:
         return <Loading />;
       case Phase.FETCHED:
-        return <ContentCardGrid articles={this.state.result.articles} />
+        return <ContentCardGrid articles={this.state.result} />
       case Phase.FETCH_ERROR:
         return <FetchError />
       default:
