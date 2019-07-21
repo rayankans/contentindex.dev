@@ -1,8 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 
+import { addArticles } from '../redux/actions';
 import ContentCardGrid from './ContentCardGrid';
 
 const useStyles = makeStyles(theme => ({
@@ -51,23 +53,7 @@ function FetchError() {
   )
 }
 
-/** @enum {string} */
-const Phase = {
-  LOADING: 'loading',
-  FETCHED: 'fetched',
-  FETCH_ERROR: 'fetcherror',
-};
-
-export default class NewContentView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      phase: Phase.LOADING,
-      result: null,
-    };
-  }
-
+class NewContentView extends React.Component {
   async componentDidMount() {
     fetch('/api')
       .then(response => {
@@ -76,22 +62,21 @@ export default class NewContentView extends React.Component {
       }
       return response.json();
     }).then(json => {
-      this.setState({result: json, phase: Phase.FETCHED});
+      this.props.dispatch(addArticles(json));
     }).catch(e => {
-      this.setState({phase: Phase.FETCH_ERROR});
+      this.setState({articles: null});
     });
   }
 
   render() {
-    switch (this.state.phase) {
-      case Phase.LOADING:
-        return <Loading />;
-      case Phase.FETCHED:
-        return <ContentCardGrid articles={this.state.result} />
-      case Phase.FETCH_ERROR:
-        return <FetchError />
-      default:
-        return <Loading />;
+    if (!this.props.articles) {
+      return <FetchError />;
+    } else if (!this.props.articles.length) {
+      return <Loading />;
+    } else {
+      return <ContentCardGrid articles={this.props.articles} />
     }
   }
 }
+
+export default connect(state => ({articles: state.fetchedArticles}))(NewContentView);

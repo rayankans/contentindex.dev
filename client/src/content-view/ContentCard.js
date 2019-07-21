@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Card from '@material-ui/core/Card';
@@ -10,6 +11,8 @@ import CheckIcon from '@material-ui/icons/Check';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+
+import { saveArticle, deleteArticle } from '../redux/actions';
 
 const useStyles = makeStyles({
   card: {
@@ -36,25 +39,23 @@ const useStyles = makeStyles({
   },
 });
 
-/**
- * @enum {string}
- */
+/** @enum {string} */
 const SaveState = {
   CAN_SAVE: 'can_save',
   PROGRESS: 'progress',
   SAVED: 'saved',
 };
 
-function handleClick(article, saveState, setSaveState) {
+async function handleClick(article, saveState, setSaveState, dispatch) {
   if (saveState === SaveState.CAN_SAVE)
-    saveContent(article, setSaveState);
+    saveContent(article, setSaveState, dispatch);
   else if (saveState === SaveState.SAVED)
-    deleteContent(article, setSaveState);
+    deleteContent(article, setSaveState, dispatch);
 }
 
-async function saveContent(article, setSaveState) {
+async function saveContent(article, setSaveState, dispatch) {
   setSaveState(SaveState.PROGRESS);
-
+  await new Promise(r => setTimeout(r, 500));
   try {
     const response = await fetch(article.url, { mode: 'no-cors' });
     const cache = await caches.open('content');
@@ -63,48 +64,40 @@ async function saveContent(article, setSaveState) {
     // Key by the URL which is unique.
     // TODO: Move this to IndexedDB.
     localStorage.setItem(article.url, JSON.stringify(article));
+    dispatch(saveArticle(article));
     setSaveState(SaveState.SAVED);
   } catch (e) {
     setSaveState(SaveState.CAN_SAVE);
   }
 }
 
-async function deleteContent(article, setSaveState) {
+async function deleteContent(article, setSaveState, dispatch) {
   setSaveState(SaveState.PROGRESS);
+
   try {
+    await new Promise(r => setTimeout(r, 500));
     const cache = await caches.open('content');
     await cache.delete(article.url);
     localStorage.removeItem(article.url);
+    dispatch(deleteArticle(article));
     setSaveState(SaveState.CAN_SAVE);
   } catch (e) {
     setSaveState(SaveState.SAVED);
   }
 }
 
-export default function ContentCard(props) {
+function ContentCard(props) {
   const classes = useStyles();
 
-  // Check local storage to see if this was already cached.
-  let initialState = SaveState.CAN_SAVE;
-  for (let i = 0; i < localStorage.length; i++) {
-    if (localStorage.key(i) === props.article.url) {
-      initialState = SaveState.SAVED;
-      break;
-    }
-  }
-  const [saveState, setSaveState] = React.useState(initialState);
+  const isSaved = props.savedArticles.map(a => a.url).includes(props.article.url);
+  const [saveState, setSaveState] = React.useState(isSaved ? SaveState.SAVED : SaveState.CAN_SAVE);
 
   const getButtonIcon = () => {
-    switch (saveState) {
-      case SaveState.CAN_SAVE:
-        return <AddIcon />;
-      case SaveState.PROGRESS:
-        return <CircularProgress size={30} />;
-      case SaveState.SAVED:
-        return <CheckIcon />;
-      default:
-        return null;
-    }
+    if (saveState === SaveState.PROGRESS)
+      return <CircularProgress size={30} />;
+    if (isSaved)
+      return <CheckIcon />;
+    return <AddIcon />;
   };
 
   return (
@@ -131,7 +124,7 @@ export default function ContentCard(props) {
         <Button 
             size="large" color="primary"
             style={{ backgroundColor: 'transparent' }}
-            onClick={() => handleClick(props.article, saveState, setSaveState)}
+            onClick={() => handleClick(props.article, saveState, setSaveState, props.dispatch)}
         >
           {getButtonIcon()}
         </Button>
@@ -139,3 +132,5 @@ export default function ContentCard(props) {
     </Card>
   );
 }
+
+export default connect(state => ({savedArticles: state.savedArticles}))(ContentCard);

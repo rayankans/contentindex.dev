@@ -12,6 +12,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4"
   }
 }

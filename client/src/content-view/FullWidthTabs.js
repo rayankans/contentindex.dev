@@ -71,7 +71,7 @@ export default function FullWidthTabs() {
         onChangeIndex={handleChangeIndex}
       >
         <TabContainer dir={theme.direction}>
-          <NewContentView style={{marginLeft: 'auto', marginRight: 'auto'}} />
+          <NewContentView style={{marginLeft: 'auto', marginRight: 'auto'}} articles={[]} />
         </TabContainer>
         <TabContainer dir={theme.direction}>
           <SavedContentView style={{marginLeft: 'auto', marginRight: 'auto'}} />

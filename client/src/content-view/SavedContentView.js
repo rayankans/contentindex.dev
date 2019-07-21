@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -24,31 +25,12 @@ function Shrug() {
     </div>);
 }
 
-export default class SavedContentView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selected: props.selected,
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.selected !== prevProps.selected) {
-      this.setState({selected: this.props.selected});
-    }
-  }
-
-  render() {
-    const articles = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      articles.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
-    }
-
-    if (!articles.length) {
-      return <Shrug />
-    } else {
-      return <ContentCardGrid articles={articles} />
-    }
+function SavedContentView(props) {
+  if (!props.savedArticles.length) {
+    return <Shrug />
+  } else {
+    return <ContentCardGrid articles={props.savedArticles} />
   }
 }
+
+export default connect(state => ({ savedArticles: state.savedArticles }))(SavedContentView);
