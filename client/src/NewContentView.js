@@ -71,7 +71,7 @@ export default class NewContentView extends React.Component {
 
   async componentDidMount() {
     await new Promise(r => setTimeout(r, 1000));  // fake delay to look cool.
-    fetch('/api?asdfsdf')
+    fetch('/api')
       .then(response => {
       if (response.status >= 400) {
         throw Error('Failed to Fetch');
