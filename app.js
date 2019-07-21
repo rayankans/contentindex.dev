@@ -11,7 +11,8 @@ app.use('/api', api);
 
 if (app.get('env') === 'production') {
   app.get('/static/*', (req, res) => res.sendFile(path.join(__dirname, `client/build/${req.path}`)));
-  app.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'client/build/index.html')));
+  app.get('/$', (req, res) => res.sendFile(path.join(__dirname, 'client/build/index.html')));
+  app.get('/*', (req, res) => res.sendFile(path.join(__dirname, `client/build/${req.path}`)));
 }
 
 app.listen(port, () => console.log(`Listening on port ${port}! Mode: ${app.get('env')}`));
