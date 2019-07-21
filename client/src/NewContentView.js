@@ -58,7 +58,7 @@ const Phase = {
   FETCH_ERROR: 'fetcherror',
 };
 
-export default class TrendingContentView extends React.Component {
+export default class NewContentView extends React.Component {
   constructor(props) {
     super(props);
 
@@ -88,6 +88,7 @@ export default class TrendingContentView extends React.Component {
 
   render() {
     if (!this.state.focused) return;
+
     switch (this.state.phase) {
       case Phase.LOADING:
         return <Loading />;

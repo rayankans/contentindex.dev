@@ -7,7 +7,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 
-import TrendingContentView from './TrendingContentView.js';
+import AddCustomContentButton from './AddCustomContentButton';
+import NewContentView from './NewContentView';
 
 function TabContainer({ children, dir }) {
   const style = {
@@ -59,7 +60,7 @@ export default function FullWidthTabs() {
           variant="fullWidth"
           centered
         >
-          <Tab label="Trending Content" />
+          <Tab label="New Content" />
           <Tab label="Saved Content" />
         </Tabs>
       </AppBar>
@@ -69,12 +70,13 @@ export default function FullWidthTabs() {
         onChangeIndex={handleChangeIndex}
       >
         <TabContainer dir={theme.direction}>
-          <TrendingContentView style={{marginLeft: 'auto', marginRight: 'auto'}} focused={value === 0}/>
+          <NewContentView style={{marginLeft: 'auto', marginRight: 'auto'}} focused={value === 0}/>
         </TabContainer>
         <TabContainer dir={theme.direction}>
           Item Two
         </TabContainer>
       </SwipeableViews>
+      <AddCustomContentButton focused={value === 0} />
     </div>
   );
 }
