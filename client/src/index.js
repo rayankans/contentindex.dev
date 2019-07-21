@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TopAppBar from './TopAppBar';
-import FullWidthTabs from './FullWidthTabs';
+import FullWidthTabs from './content-view/FullWidthTabs';
 
 function App() {
   return (
