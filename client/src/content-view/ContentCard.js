@@ -30,9 +30,11 @@ async function handleClick(article, saveState, setSaveState, dispatch) {
 }
 
 async function saveContent(article, setSaveState, dispatch) {
+  await new Promise(r => setTimeout(r, 50));
   setSaveState(SaveState.PROGRESS);
-  await new Promise(r => setTimeout(r, 100));
+  
   try {
+    await new Promise(r => setTimeout(r, 500));
     const response = await fetch(article.url, { mode: 'no-cors' });
     const cache = await caches.open('content');
     await cache.put(article.url, response);
@@ -40,24 +42,27 @@ async function saveContent(article, setSaveState, dispatch) {
     // Key by the URL which is unique.
     // TODO: Move this to IndexedDB.
     localStorage.setItem(article.id, JSON.stringify(article));
-    dispatch(saveArticle(article));
+    dispatch(saveArticle(article.id));
     setSaveState(SaveState.SAVED);
   } catch (e) {
+    console.log(e);
     setSaveState(SaveState.CAN_SAVE);
   }
 }
 
 async function deleteContent(article, setSaveState, dispatch) {
+  await new Promise(r => setTimeout(r, 50));
   setSaveState(SaveState.PROGRESS);
 
   try {
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise(r => setTimeout(r, 500));
     const cache = await caches.open('content');
     await cache.delete(article.url);
     localStorage.removeItem(article.id);
-    dispatch(deleteArticle(article));
+    dispatch(deleteArticle(article.id));
     setSaveState(SaveState.CAN_SAVE);
   } catch (e) {
+    console.log(e);
     setSaveState(SaveState.SAVED);
   }
 }
@@ -99,7 +104,7 @@ function ContentCard(props) {
     },
   }))();
 
-  const isSaved = props.savedArticles.map(a => a.url).includes(props.article.url);
+  const isSaved = props.savedArticleIds.includes(props.article.id);
   const [saveState, setSaveState] = React.useState(isSaved ? SaveState.SAVED : SaveState.CAN_SAVE);
 
   const getButtonIcon = () => {
@@ -149,4 +154,4 @@ function ContentCard(props) {
   );
 }
 
-export default connect(state => ({savedArticles: state.savedArticles}))(ContentCard);
+export default connect(state => ({savedArticleIds: state.savedArticleIds}))(ContentCard);

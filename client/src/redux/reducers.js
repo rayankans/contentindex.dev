@@ -1,31 +1,29 @@
 import { combineReducers } from 'redux';
 
-import { ADD_ARTICLES, SAVE_ARTICLE, DELETE_ARTICLE } from './actions.js';
-
+import { FETCH_ARTICLES, SAVE_ARTICLE, DELETE_ARTICLE } from './actions.js';
 
 function fetchedArticles(state = [], action) {
-  if (action.type !== ADD_ARTICLES)
+  if (action.type !== FETCH_ARTICLES)
     return state;
 
   return [...state].concat(action.articles);
 }
 
-
-function savedArticles(state = [], action) {
+function savedArticleIds(state = [], action) {
   if (action.type === SAVE_ARTICLE) {
     const newState = [...state];
-    newState.push(action.article);
+    newState.push(action.id);
     return newState;
   }
 
   if (action.type === DELETE_ARTICLE) {
-    const savedArticles = [];
-    for (const article of state) {
-      if (article.url !== action.article.url) {
-        savedArticles.push(article);
+    const savedIds = [];
+    for (const id of state) {
+      if (id !== action.id) {
+        savedIds.push(id);
       }
     }
-    return savedArticles;
+    return savedIds;
   }
 
   return state;
@@ -33,5 +31,5 @@ function savedArticles(state = [], action) {
 
 export default combineReducers({
   fetchedArticles,
-  savedArticles,
+  savedArticleIds,
 });

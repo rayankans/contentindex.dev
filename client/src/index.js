@@ -28,7 +28,5 @@ navigator.serviceWorker.addEventListener('message', e => console.log(e.data));
 
 // Inititalize `store` with saved content.
 for (let i = 0; i < localStorage.length; i++) {
-  const key = localStorage.key(i);
-  const article = localStorage.getItem(key);
-  store.dispatch(saveArticle(JSON.parse(article)));
+  store.dispatch(saveArticle(localStorage.key(i)));
 }

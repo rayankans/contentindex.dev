@@ -1,25 +1,25 @@
 
-export const ADD_ARTICLES = 'ADD_ARTICLES';
+export const FETCH_ARTICLES = 'FETCH_ARTICLES';
 export const SAVE_ARTICLE = 'SAVE_ARTICLE';
 export const DELETE_ARTICLE = 'DELETE_ARTICLE';
 
 export function addArticles(articles) {
   return {
-    type: ADD_ARTICLES,
+    type: FETCH_ARTICLES,
     articles,
   };
 }
 
-export function saveArticle(article) {
+export function saveArticle(id) {
   return {
     type: SAVE_ARTICLE,
-    article,
+    id,
   };
 }
 
-export function deleteArticle(article) {
+export function deleteArticle(id) {
   return {
     type: DELETE_ARTICLE,
-    article,
+    id,
   };
 }
