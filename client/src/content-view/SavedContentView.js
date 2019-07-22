@@ -8,6 +8,7 @@ import ContentCardGrid from './ContentCardGrid';
 const useStyles = makeStyles(theme => ({
   shrug: {
     margin: theme.spacing(8),
+    textAlign: 'center',
   },
 }));
 
@@ -15,8 +16,8 @@ function Shrug() {
   const classes = useStyles();
 
   return (
-    <div style={{textAlign: 'center'}}>
-      <Typography variant="h1" className={classes.shrug}>
+    <div className={classes.shrug}>
+      <Typography variant="h2" style={{marginBottom: 20}}>
         ¯\_(ツ)_/¯
       </Typography>
       <Typography variant="subtitle1">

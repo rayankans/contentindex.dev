@@ -15,11 +15,11 @@ export default function ContentCards(props) {
   const classes = useStyles();
 
   return (
-  <Grid container className={classes.root} spacing={2}>
+  <Grid container className={classes.root} spacing={4}>
     <Grid item xs={12}>
-      <Grid container justify="center" spacing={6}>
+      <Grid container justify="center" spacing={8}>
         {props.articles.map((article, i) => (
-          <Grid key={i} item>
+          <Grid key={i} item xs={12} lg={6}>
             <ContentCard article={article} />
           </Grid>
         ))}

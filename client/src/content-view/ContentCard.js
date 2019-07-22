@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -14,30 +14,30 @@ import Typography from '@material-ui/core/Typography';
 
 import { saveArticle, deleteArticle } from '../redux/actions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
     justifyContent: 'left',
-    width: 600,
-    height: 150,
+    width: '100%',
+    height: '10rem',
   },
   actionarea: {
     display: 'flex',
-    flex: '1 1 auto',
+    flex: '9 1 auto',
     justifyContent: 'left',
   },
   media: {
-    flex: '0 0 150px',
-    height: 150,
+    flex: '0 0 10rem',
+    height: '10rem',
   },
   metadata: {
     flex: '1 1 auto',
   },
   actions: {
-    flex: '0 1 auto',
+    flex: '1',
     verticalAlign: 'bottom',
   },
-});
+}));
 
 /** @enum {string} */
 const SaveState = {

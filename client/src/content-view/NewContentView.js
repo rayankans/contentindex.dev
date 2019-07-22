@@ -45,7 +45,7 @@ function FetchError() {
 
   return (
     <div style={{textAlign: 'center'}}>
-      <Typography variant="h1" className={classes.shrug}>
+      <Typography variant="h2" className={classes.shrug}>
         ¯\_(ツ)_/¯
       </Typography>
       <ErrorReason />
