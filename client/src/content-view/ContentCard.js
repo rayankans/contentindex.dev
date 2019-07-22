@@ -31,7 +31,7 @@ async function handleClick(article, saveState, setSaveState, dispatch) {
 
 async function saveContent(article, setSaveState, dispatch) {
   setSaveState(SaveState.PROGRESS);
-  await new Promise(r => setTimeout(r, 500));
+  await new Promise(r => setTimeout(r, 100));
   try {
     const response = await fetch(article.url, { mode: 'no-cors' });
     const cache = await caches.open('content');
@@ -39,7 +39,7 @@ async function saveContent(article, setSaveState, dispatch) {
 
     // Key by the URL which is unique.
     // TODO: Move this to IndexedDB.
-    localStorage.setItem(article.url, JSON.stringify(article));
+    localStorage.setItem(article.id, JSON.stringify(article));
     dispatch(saveArticle(article));
     setSaveState(SaveState.SAVED);
   } catch (e) {
@@ -51,10 +51,10 @@ async function deleteContent(article, setSaveState, dispatch) {
   setSaveState(SaveState.PROGRESS);
 
   try {
-    await new Promise(r => setTimeout(r, 500));
+    await new Promise(r => setTimeout(r, 100));
     const cache = await caches.open('content');
     await cache.delete(article.url);
-    localStorage.removeItem(article.url);
+    localStorage.removeItem(article.id);
     dispatch(deleteArticle(article));
     setSaveState(SaveState.CAN_SAVE);
   } catch (e) {
@@ -115,7 +115,7 @@ function ContentCard(props) {
     <Card className={classes.card}>
       <CardActionArea 
           className={classes.actionarea}
-          onClick={() => window.open(props.article.permalink, '_blank')}
+          onClick={() => window.open(isSaved ? `/article/${props.article.id}` : props.article.permalink, '_blank')}
       >
         <CardMedia
           className={classes.media}

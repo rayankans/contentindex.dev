@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const fetch = require('node-fetch');
 const router = express.Router();
 
@@ -35,6 +36,7 @@ async function fetchRedditPosts(subreddit) {
   const cats = (await response.json()).data.children;
   return cats.filter(cat => cat.data.thumbnail.startsWith('http'))
              .filter(cat => getUrlAndType(cat)).map(cat => ({
+    id: crypto.createHash('md5').update(cat.data.permalink).digest('hex'),
     title: cat.data.title,
     description: cat.data.selftext ? cat.data.selftext : getDescriptionForSubreddit(subreddit),
     thumbnail: cat.data.thumbnail,
