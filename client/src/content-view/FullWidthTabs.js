@@ -15,7 +15,7 @@ function TabContainer({ children, dir }) {
   const style = {
     display: 'flex',
     justifyContent: 'center',
-    padding: 8 * 3,
+    padding: 8,
   };
 
   return (

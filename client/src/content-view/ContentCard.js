@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -14,28 +14,36 @@ import Typography from '@material-ui/core/Typography';
 
 import { saveArticle, deleteArticle } from '../redux/actions';
 
+const imageDimension = '15vh';
 const useStyles = makeStyles(theme => ({
   card: {
-    display: 'flex',
-    justifyContent: 'left',
+    position: 'relative',
     width: '100%',
-    height: '10rem',
+    height: imageDimension,
   },
   actionarea: {
     display: 'flex',
-    flex: '9 1 auto',
     justifyContent: 'left',
+    width: '100%',
+    height: '100%',
   },
   media: {
-    flex: '0 0 10rem',
-    height: '10rem',
+    flex: `0 0 ${imageDimension}`,
+    height: imageDimension,
   },
   metadata: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     flex: '1 1 auto',
+    height: imageDimension,
+    padding: theme.spacing(1),
   },
   actions: {
-    flex: '1',
-    verticalAlign: 'bottom',
+    position: 'absolute',
+    padding: theme.spacing(0),
+    bottom: theme.spacing(1),
+    right: theme.spacing(1),
   },
 }));
 
@@ -88,6 +96,7 @@ async function deleteContent(article, setSaveState, dispatch) {
 
 function ContentCard(props) {
   const classes = useStyles();
+  const theme = useTheme();
 
   const isSaved = props.savedArticles.map(a => a.url).includes(props.article.url);
   const [saveState, setSaveState] = React.useState(isSaved ? SaveState.SAVED : SaveState.CAN_SAVE);
@@ -100,6 +109,7 @@ function ContentCard(props) {
     return <AddIcon />;
   };
 
+  const fontSize = props.isMd ? '1.8rem' : '1.2rem';
   return (
     <Card className={classes.card}>
       <CardActionArea 
@@ -112,18 +122,23 @@ function ContentCard(props) {
           title={props.article.title}
         />
         <CardContent className={classes.metadata}>
-          <Typography variant="h5" component="h2">
+          <Typography 
+              variant="h1"
+              style={{fontSize, paddingBottom: theme.spacing(1)}}>
             {props.article.title}
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
+          <Typography 
+              variant="body2" color="textSecondary" component="p"
+              style={{fontSize: '0.8rem', paddingRight: theme.spacing(2)}}
+            >
             {props.article.description}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions className={classes.actions} disableSpacing>
         <Button 
-            size="large" color="primary"
-            style={{ backgroundColor: 'transparent' }}
+            size="medium" color="primary"
+            style={{ backgroundColor: 'transparent', padding: 0, minWidth: 0 }}
             onClick={() => handleClick(props.article, saveState, setSaveState, props.dispatch)}
         >
           {getButtonIcon()}

@@ -17,7 +17,7 @@ function Shrug() {
 
   return (
     <div className={classes.shrug}>
-      <Typography variant="h2" style={{marginBottom: 20}}>
+      <Typography variant="h2" style={{marginBottom: 20}} noWrap>
         ¯\_(ツ)_/¯
       </Typography>
       <Typography variant="subtitle1">
