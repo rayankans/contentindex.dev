@@ -1,19 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import TopAppBar from './TopAppBar';
 import FullWidthTabs from './content-view/FullWidthTabs';
+import OfflineArticle from './content-view/OfflineArticle';
 import { Provider } from 'react-redux';
 import store from './redux/store.js';
 import {saveArticle} from './redux/actions.js';
 
 function App() {
   return (
-  <>
-    <TopAppBar />
-    <Provider store={store} >
-      <FullWidthTabs />
-    </Provider>
-  </>);
+    <Router>
+      <TopAppBar />
+      <Provider store={store} >
+        <Switch>
+          <Route path="/" exact component={FullWidthTabs} />
+          <Route path="/article/*" strict component={OfflineArticle} />
+          <Redirect to="/" />
+        </Switch>
+      </Provider>
+    </Router>);
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
