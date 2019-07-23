@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Card from '@material-ui/core/Card';
@@ -113,7 +114,8 @@ function ContentCard(props) {
     <Card className={classes.card}>
       <CardActionArea 
           className={classes.actionarea}
-          onClick={() => window.open(isSaved ? `/article/${props.article.id}` : props.article.permalink, '_blank')}
+          onClick={() => isSaved ? props.history.push(`/article/${props.article.id}`)
+                                 : window.open(props.article.permalink, '_blank')}
       >
         <CardMedia
           className={classes.media}
@@ -147,4 +149,4 @@ function ContentCard(props) {
   );
 }
 
-export default connect(state => ({savedArticleIds: state.savedArticleIds}))(ContentCard);
+export default connect(state => ({savedArticleIds: state.savedArticleIds}))(withRouter(ContentCard));
