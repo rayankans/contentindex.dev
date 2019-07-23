@@ -13,7 +13,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { saveArticle, deleteArticle } from '../redux/actions';
+import { storeContent, clearContent } from '../storage/content_cache.js';
+import { saveArticle, deleteArticle } from '../redux/actions.js';
 
 /** @enum {string} */
 const SaveState = {
@@ -35,13 +36,7 @@ async function saveContent(article, setSaveState, dispatch) {
   
   try {
     await new Promise(r => setTimeout(r, 500));
-    const response = await fetch(article.url, { mode: 'no-cors' });
-    const cache = await caches.open('content');
-    await cache.put(article.url, response);
-
-    // Key by the URL which is unique.
-    // TODO: Move this to IndexedDB.
-    localStorage.setItem(article.id, JSON.stringify(article));
+    await storeContent(article);
     dispatch(saveArticle(article.id));
     setSaveState(SaveState.SAVED);
   } catch (e) {
@@ -56,9 +51,7 @@ async function deleteContent(article, setSaveState, dispatch) {
 
   try {
     await new Promise(r => setTimeout(r, 500));
-    const cache = await caches.open('content');
-    await cache.delete(article.url);
-    localStorage.removeItem(article.id);
+    await clearContent(article);
     dispatch(deleteArticle(article.id));
     setSaveState(SaveState.CAN_SAVE);
   } catch (e) {

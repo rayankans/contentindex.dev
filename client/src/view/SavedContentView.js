@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import ContentCardGrid from './ContentCardGrid';
+import { getStoredArticles } from '../storage/content_cache.js'
 
 const useStyles = makeStyles(theme => ({
   shrug: {
@@ -25,11 +26,8 @@ function Shrug() {
     </div>);
 }
 
-export default function SavedContentView(props) {
-  const articles = [];
-  for (let i = 0; i < localStorage.length; i++)
-    articles.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
-
+export default function SavedContentView() {
+  const articles = getStoredArticles();
   if (!articles.length) {
     return <Shrug />
   } else {

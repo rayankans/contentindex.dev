@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import TopAppBar from './TopAppBar';
-import FullWidthTabs from './content-view/FullWidthTabs';
-import OfflineArticle from './content-view/OfflineArticle';
+import FullWidthTabs from './view/FullWidthTabs';
+import OfflineArticle from './view/OfflineArticle';
 import { Provider } from 'react-redux';
 import store from './redux/store.js';
-import {saveArticle} from './redux/actions.js';
+import { setUpStorage } from './storage/content_cache.js';
 
 function App() {
   return (
@@ -26,7 +26,4 @@ ReactDOM.render(<App />, document.getElementById('root'));
 navigator.serviceWorker.register('/sw.js');
 navigator.serviceWorker.addEventListener('message', e => console.log(e.data));
 
-// Inititalize `store` with saved content.
-for (let i = 0; i < localStorage.length; i++) {
-  store.dispatch(saveArticle(localStorage.key(i)));
-}
+setUpStorage(store.dispatch);
