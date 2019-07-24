@@ -37,8 +37,11 @@ function VideoMedia(props) {
 export default function OfflineArticle(props) {
   const classes = useStyles();
 
-  const id = props.match.params[0];
+  const id = props.match.params[0].endsWith('/')
+      ? props.match.params[0].slice(0, -1)
+      : props.match.params[0];
   const article = JSON.parse(localStorage.getItem(id));
+
   if (!article)
     return (<h1> 404 </h1>);
 

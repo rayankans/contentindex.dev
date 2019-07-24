@@ -82,7 +82,7 @@ export async function setUpStorage(dispatch) {
     return;
   }
 
-  const descriptions = navigator.serviceWorker.getDescriptions();
+  const descriptions = await registration.index.getDescriptions();
   if (descriptions.length === localStorage.length) {
     // nothing to do here.
     return;
