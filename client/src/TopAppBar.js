@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, responsiveFontSizes } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
@@ -10,15 +10,30 @@ import MenuIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    flex: 1,
   },
-  menuButton: {
+  toolbar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  homeButton: {
     margin: theme.spacing(0),
   },
   title: {
-    flexGrow: 1,
+    flex: '0 0 auto',
     marginLeft: theme.spacing(2),
   },
+  subtitle: {
+    flex: '1 1 auto',
+    marginLeft: theme.spacing(2),
+  },
+  iconButton: {
+    margin: theme.spacing(0),
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  }
 }));
 
 function GitHubIcon() {
@@ -28,23 +43,39 @@ function GitHubIcon() {
   </SvgIcon>);
 }
 
+function SpecIcon() {
+  return(
+  <SvgIcon>
+    <path d="M0 0h24v24H0z" fill="none"/><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+  </SvgIcon>);
+}
+
 export default function TopAppBar() {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <NavLink to="/" activeStyle={{color: 'white'}}>
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu">
               <MenuIcon />
             </IconButton>
           </NavLink>
-          <Typography variant="h6" className={classes.title}>
-            Content Index Web API
+          <Typography variant="h6" className={classes.title} noWrap>
+            Sad Chonks
+          </Typography>
+          <Typography variant="body2" className={classes.subtitle} noWrap>
+            Content Index API
           </Typography>
           <IconButton 
-              edge="end" className={classes.menuButton} color="inherit" aria-label="Menu"
+              edge="end" className={classes.iconButton} color="inherit" aria-label="Menu"
+              onClick={() => window.open('https://github.com/rknoll/content-index', '_blank')}
+          >
+            <SpecIcon />
+          </IconButton>
+          <IconButton 
+              edge="end" className={classes.iconButton} color="inherit" aria-label="Menu"
               onClick={() => window.open('https://github.com/rayankans/contentindex.dev', '_blank')}
           >
             <GitHubIcon />
