@@ -16,6 +16,7 @@ const useStyles = makeStyles(theme => ({
       paddingLeft: '5vw',
       paddingRight: '5vw',
     },
+    overflow: 'hidden',
   }
 }));
 
