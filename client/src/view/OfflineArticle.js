@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {
     textAlign: 'center',
+    paddingTop: theme.spacing(4),
     [theme.breakpoints.up('md')]: {
       paddingLeft: '10vw',
       paddingRight: '10vw',
@@ -28,7 +29,7 @@ function VideoMedia(props) {
   const classes = useStyles();
 
   return (
-  <video style={{maxWidth: "100%"}} controls className={classes.media}>
+  <video controls className={classes.media}>
     <source src={`${props.url}?cache`} type="video/mp4" />
   </video>);
 }
