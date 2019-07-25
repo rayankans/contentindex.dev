@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -37,16 +38,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function FullWidthTabs() {
+function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(window.location.pathname.startsWith('/saved') ? 1 : 0);
 
-  function handleChange(event, newValue) {
-    setValue(newValue);
-  }
+  function handleChangeIndex(index, history) {
+    console.log(index);
+    if (index === 0)
+      history.push('/');
+    else if (index === 1)
+      history.push('/saved');
 
-  function handleChangeIndex(index) {
     setValue(index);
   }
 
@@ -55,7 +58,7 @@ export default function FullWidthTabs() {
       <AppBar position="static" color="default">
         <Tabs
           value={value}
-          onChange={handleChange}
+          onChange={(_, index) => handleChangeIndex(index, props.history)}
           indicatorColor="primary"
           textColor="primary"
           variant="fullWidth"
@@ -68,7 +71,7 @@ export default function FullWidthTabs() {
       <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
-        onChangeIndex={handleChangeIndex}
+        onChangeIndex={index => handleChangeIndex(index, props.history)}
       >
         <TabContainer dir={theme.direction}>
           <NewContentView articles={[]} />
@@ -81,3 +84,5 @@ export default function FullWidthTabs() {
     </div>
   );
 }
+
+export default withRouter(FullWidthTabs);

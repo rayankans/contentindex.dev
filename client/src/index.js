@@ -15,6 +15,7 @@ function App() {
       <Provider store={store} >
         <Switch>
           <Route path="/" exact component={FullWidthTabs} />
+          <Route path="/saved" exact component={FullWidthTabs} />
           <Route path="/article/*" strict component={OfflineArticle} />
           <Redirect to="/" />
         </Switch>
