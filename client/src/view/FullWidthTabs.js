@@ -12,9 +12,9 @@ import AddCustomContentButton from './AddCustomContentButton';
 import NewContentView from './NewContentView';
 import SavedContentView from './SavedContentView';
 
-function TabContainer({ children, dir }) {
+function TabContainer({ children, dir, visible }) {
   const style = {
-    display: 'flex',
+    display: visible ?  'flex' : 'none',
     justifyContent: 'center',
     padding: 8,
   };
@@ -41,15 +41,16 @@ const useStyles = makeStyles(theme => ({
 function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [value, setValue] = React.useState(window.location.pathname.startsWith('/saved') ? 1 : 0);
+  const [value, setValue] = React.useState(props.location.pathname.startsWith('/saved') ? 1 : 0);
+  React.useEffect(() => props.history.listen(({pathname}) => setValue(pathname.startsWith('/saved') ? 1 : 0)));
+  const [visible, setVisible] = React.useState([value === 0, value === 1]);
 
   function handleChangeIndex(index, history) {
-    console.log(index);
     if (index === 0)
       history.push('/');
     else if (index === 1)
       history.push('/saved');
-
+    
     setValue(index);
   }
 
@@ -71,12 +72,17 @@ function FullWidthTabs(props) {
       <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
+        // pre-render the next tab.
+        onSwitching={() => {if (!visible[0] || !visible[1]) setVisible([true, true]);}}
+        // set the new tab value
         onChangeIndex={index => handleChangeIndex(index, props.history)}
+        // hide the other tab so the height is appropriate.
+        onTransitionEnd={() => setVisible([value === 0, value === 1])}
       >
-        <TabContainer dir={theme.direction}>
+        <TabContainer dir={theme.direction} visible={visible[0]}>
           <NewContentView articles={[]} />
         </TabContainer>
-        <TabContainer dir={theme.direction}>
+        <TabContainer dir={theme.direction} visible={visible[1]}>
           <SavedContentView />
         </TabContainer>
       </SwipeableViews>
