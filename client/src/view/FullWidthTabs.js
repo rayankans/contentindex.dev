@@ -14,7 +14,7 @@ import SavedContentView from './SavedContentView';
 
 function TabContainer({ children, dir, visible }) {
   const style = {
-    display: visible ?  'flex' : 'none',
+    display: 'flex',
     justifyContent: 'center',
     padding: 8,
   };
@@ -43,15 +43,15 @@ function FullWidthTabs(props) {
   const theme = useTheme();
   const [value, setValue] = React.useState(props.location.pathname.startsWith('/saved') ? 1 : 0);
   React.useEffect(() => props.history.listen(({pathname}) => setValue(pathname.startsWith('/saved') ? 1 : 0)));
-  const [visible, setVisible] = React.useState([value === 0, value === 1]);
 
   function handleChangeIndex(index, history) {
     if (index === 0)
       history.push('/');
     else if (index === 1)
       history.push('/saved');
-    
+
     setValue(index);
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }
 
   return (
@@ -72,17 +72,12 @@ function FullWidthTabs(props) {
       <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
-        // pre-render the next tab.
-        onSwitching={() => {if (!visible[0] || !visible[1]) setVisible([true, true]);}}
-        // set the new tab value
         onChangeIndex={index => handleChangeIndex(index, props.history)}
-        // hide the other tab so the height is appropriate.
-        onTransitionEnd={() => setVisible([value === 0, value === 1])}
       >
-        <TabContainer dir={theme.direction} visible={visible[0]}>
+        <TabContainer dir={theme.direction}>
           <NewContentView articles={[]} />
         </TabContainer>
-        <TabContainer dir={theme.direction} visible={visible[1]}>
+        <TabContainer dir={theme.direction}>
           <SavedContentView />
         </TabContainer>
       </SwipeableViews>
