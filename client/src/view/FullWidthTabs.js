@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -12,7 +11,7 @@ import AddCustomContentButton from './AddCustomContentButton';
 import NewContentView from './NewContentView';
 import SavedContentView from './SavedContentView';
 
-function TabContainer({ children, dir, visible }) {
+function TabContainer({ children, dir }) {
   const style = {
     display: 'flex',
     justifyContent: 'center',
@@ -25,11 +24,6 @@ function TabContainer({ children, dir, visible }) {
     </Typography>
   );
 }
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-  dir: PropTypes.string.isRequired,
-};
 
 const useStyles = makeStyles(theme => ({
   root: {

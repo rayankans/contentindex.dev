@@ -55,6 +55,9 @@ function FetchError() {
 
 class NewContentView extends React.Component {
   async componentDidMount() {
+    if (this.props.articles && this.props.articles.length)
+      return;
+
     fetch('/api')
       .then(response => {
       if (response.status >= 400) {
