@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -113,16 +113,17 @@ async function deleteContent(article, setSaveState, dispatch) {
 
 function ContentCard(props) {
   const classes = useStyles();
+  const theme = useTheme();
 
   const isSaved = props.savedArticleIds.includes(props.article.id);
   const [saveState, setSaveState] = React.useState(isSaved ? SaveState.SAVED : SaveState.CAN_SAVE);
 
   const getButtonIcon = () => {
     if (saveState === SaveState.PROGRESS)
-      return <CircularProgress size={30} />;
+      return <CircularProgress fontSize="large" />;
     if (isSaved)
-      return <CheckIcon />;
-    return <AddIcon />;
+      return <CheckIcon fontSize="large" />;
+    return <AddIcon fontSize="large" />;
   };
 
   return (
@@ -149,7 +150,7 @@ function ContentCard(props) {
       <CardActions className={classes.addButton} disableSpacing>
           <Button 
               color="primary"
-              style={{ backgroundColor: 'transparent', padding: 0, minWidth: 0 }}
+              style={{ backgroundColor: 'transparent', padding: theme.spacing(1), minWidth: 0 }}
               onClick={() => handleClick(props.article, saveState, setSaveState, props.dispatch)}
           >
             {getButtonIcon()}

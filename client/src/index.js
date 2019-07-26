@@ -25,6 +25,5 @@ function App() {
 
 ReactDOM.render(<App />, document.getElementById('root'));
 navigator.serviceWorker.register('/sw.js');
-navigator.serviceWorker.addEventListener('message', e => console.log(e.data));
 
 setUpStorage(store.dispatch);
