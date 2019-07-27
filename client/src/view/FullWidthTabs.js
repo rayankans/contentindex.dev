@@ -7,7 +7,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 
-import AddCustomContentButton from './AddCustomContentButton';
+import SideFab from './SideFab';
 import NewContentView from './NewContentView';
 import SavedContentView from './SavedContentView';
 
@@ -75,7 +75,7 @@ function FullWidthTabs(props) {
           <SavedContentView />
         </TabContainer>
       </SwipeableViews>
-      <AddCustomContentButton showRefresh={value === 0}/>
+      <SideFab showRefresh={value === 0}/>
     </div>
   );
 }

@@ -22,12 +22,12 @@ const useStyles = makeStyles(theme => ({
   },
   fabRefresh: {
     position: 'fixed',
-    bottom: theme.spacing(18),
+    bottom: theme.spacing(19),
     right: theme.spacing(5),
   },
   fabAdd: {
     position: 'fixed',
-    bottom: theme.spacing(12),
+    bottom: theme.spacing(13),
     right: theme.spacing(5),
   },
 }));
@@ -38,6 +38,7 @@ function AddContentButton(props) {
   const [more, setMore] = React.useState(false);
 
   function handleClick(event) {
+    setMore(false);
     setAnchorEl(event.currentTarget);
   }
 
@@ -58,6 +59,7 @@ function AddContentButton(props) {
         <Fab 
             aria-label="Refresh" className={classes.fabRefresh} size="small"
             onClick={() => {
+              setMore(false);
               props.dispatch(addArticles([]));
               window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }}
