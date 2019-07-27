@@ -54,10 +54,7 @@ function FetchError() {
 }
 
 class NewContentView extends React.Component {
-  async componentDidMount() {
-    if (this.props.articles && this.props.articles.length)
-      return;
-
+  fetchArticles_() {
     fetch('/api')
       .then(response => {
       if (response.status >= 400) {
@@ -75,6 +72,7 @@ class NewContentView extends React.Component {
     if (!this.props.articles) {
       return <FetchError />;
     } else if (!this.props.articles.length) {
+      this.fetchArticles_();
       return <Loading />;
     } else {
       return <ContentCardGrid articles={this.props.articles} />

@@ -75,7 +75,7 @@ function FullWidthTabs(props) {
           <SavedContentView />
         </TabContainer>
       </SwipeableViews>
-      <AddCustomContentButton />
+      <AddCustomContentButton showRefresh={value === 0}/>
     </div>
   );
 }
