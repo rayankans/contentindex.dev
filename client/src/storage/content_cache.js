@@ -5,13 +5,18 @@ const CACHE_NAME = 'content';
 
 async function writeToCache(article) {
   const cache = await caches.open(CACHE_NAME);
-  const response = await fetch(article.url, { mode: 'no-cors' });
-  await cache.put(`/content/${article.id}`, response);
+  const responses = await Promise.all([
+      fetch(article.url, { mode: 'no-cors' }),
+      fetch(article.thumbnail, { mode: 'no-cors' }),
+  ]);
+  await cache.put(`/content/${article.id}`, responses[0]);
+  await cache.put(`/icon/${article.id}`, responses[1]);
 }
 
 async function clearCache(article) {
   const cache = await caches.open(CACHE_NAME);
   await cache.delete(`/content/${article.id}`);
+  await cache.delete(`/icon/${article.id}`);
 }
 
 async function registerContent(article) {

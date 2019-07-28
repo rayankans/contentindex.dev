@@ -134,7 +134,9 @@ function ContentCard(props) {
       >
         <CardMedia
           className={classes.media}
-          image={props.article.thumbnail}
+          image={window.location.pathname === '/saved' && isSaved
+                    ? `/icon/${props.article.id}`
+                    : props.article.thumbnail}
           title={props.article.title}
         />
         <CardContent className={classes.metadata}>
