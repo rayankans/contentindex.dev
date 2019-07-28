@@ -107,6 +107,7 @@ async function onAdd(category, onClose, dispatch, showSnackbar) {
     thumbnail: iconUrl,
     permalink: null,
   };
+  console.log(article);
 
   try {
     await saveCustomContent(article, response);

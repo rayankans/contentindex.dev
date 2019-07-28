@@ -98,10 +98,10 @@ export async function setUpStorage(dispatch) {
 }
 
 export async function saveCustomContent(article, responseContent) {
-  if (responseContent) {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.put(article.url, responseContent);
-  }
+  const cache = await caches.open(CACHE_NAME);
+  if (responseContent)
+    await cache.put(`/content/${article.id}`, responseContent);
+  await cache.put(`/icon/${article.id}`, await fetch(article.thumbnail, { mode: 'no-cors' }));
   await registerContent(article);
 }
 
