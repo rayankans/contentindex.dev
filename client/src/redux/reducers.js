@@ -5,6 +5,9 @@ import { FETCH_ARTICLES, SAVE_ARTICLE, DELETE_ARTICLE } from './actions.js';
 function fetchedArticles(state = [], action) {
   if (action.type !== FETCH_ARTICLES)
     return state;
+
+  if (!action.articles)
+    return null;
   if (!action.articles.length)
     return [];
 

@@ -53,8 +53,8 @@ function FetchError() {
   )
 }
 
-class NewContentView extends React.Component {
-  fetchArticles_() {
+function NewContentView(props) {
+  function fetchArticles() {
     fetch('/api')
       .then(response => {
       if (response.status >= 400) {
@@ -62,21 +62,19 @@ class NewContentView extends React.Component {
       }
       return response.json();
     }).then(json => {
-      this.props.dispatch(addArticles(json));
+      props.dispatch(addArticles(json));
     }).catch(e => {
-      this.setState({articles: null});
+      props.dispatch(addArticles(null));
     });
   }
 
-  render() {
-    if (!this.props.articles) {
-      return <FetchError />;
-    } else if (!this.props.articles.length) {
-      this.fetchArticles_();
-      return <Loading />;
-    } else {
-      return <ContentCardGrid articles={this.props.articles} />
-    }
+  if (!props.articles) {
+    return <FetchError />;
+  } else if (!props.articles.length) {
+    fetchArticles();
+    return <Loading />;
+  } else {
+    return <ContentCardGrid articles={props.articles} />
   }
 }
 
