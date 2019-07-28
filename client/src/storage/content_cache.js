@@ -28,13 +28,13 @@ async function registerContent(article) {
   
   if (!registration.index)
     return;
-  
+
   await registration.index.add({
     // The id & url are needed to delete content from the SW.
     id: contentIndexId(article),
     title: article.title,
     description: article.description,
-    category: article.type === 'video' ? 'video' : 'article',
+    category: article.type === 'photo' ? 'article' : article.type,
     iconUrl: article.thumbnail,
     launchUrl: `/article/${article.id}/`,
   }); 
@@ -97,4 +97,10 @@ export async function setUpStorage(dispatch) {
               localStorage.removeItem(deletedId);
               dispatch(deleteArticle(deletedId));
             });
+}
+
+export async function saveCustomContent(article, response) {
+  const cache = await caches.open(CACHE_NAME);
+  await cache.put(article.url, response);
+  await registerContent(article);
 }
