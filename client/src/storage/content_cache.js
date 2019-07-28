@@ -104,3 +104,10 @@ export async function saveCustomContent(article, responseContent) {
   }
   await registerContent(article);
 }
+
+export async function clearAll() {
+  await caches.delete(CACHE_NAME);
+  const allIds = getStoredArticles().map(article => article.id);
+  localStorage.clear();
+  return allIds;
+}

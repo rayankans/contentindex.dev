@@ -15,13 +15,6 @@ import Typography from '@material-ui/core/Typography';
 import { storeContent, clearContent } from '../storage/content_cache.js';
 import { saveArticle, deleteArticle } from '../redux/actions.js';
 
-/** @enum {string} */
-const SaveState = {
-  CAN_SAVE: 'can_save',
-  PROGRESS: 'progress',
-  SAVED: 'saved',
-};
-
 const imageDimension = '10vh';
 const useStyles = makeStyles(theme => ({
   card: {
@@ -73,41 +66,32 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-async function handleClick(article, saveState, setSaveState, dispatch) {
-  if (saveState === SaveState.CAN_SAVE)
-    saveContent(article, setSaveState, dispatch);
-  else if (saveState === SaveState.SAVED)
-    deleteContent(article, setSaveState, dispatch);
-}
-
-async function saveContent(article, setSaveState, dispatch) {
+async function handleClick(article, isSaved, setIsLoading, dispatch) {
   await new Promise(r => setTimeout(r, 50));
-  setSaveState(SaveState.PROGRESS);
-  
-  try {
-    await new Promise(r => setTimeout(r, 500));
-    await storeContent(article);
-    dispatch(saveArticle(article.id));
-    setSaveState(SaveState.SAVED);
-  } catch (e) {
-    console.log(e);
-    setSaveState(SaveState.CAN_SAVE);
-  }
-}
-
-async function deleteContent(article, setSaveState, dispatch) {
-  await new Promise(r => setTimeout(r, 50));
-  setSaveState(SaveState.PROGRESS);
+  setIsLoading(true);
 
   try {
-    await new Promise(r => setTimeout(r, 500));
-    await clearContent(article);
-    dispatch(deleteArticle(article.id));
-    setSaveState(SaveState.CAN_SAVE);
+    if (isSaved)
+      await deleteContent(article, dispatch);
+    else
+      await saveContent(article, dispatch);
   } catch (e) {
     console.log(e);
-    setSaveState(SaveState.SAVED);
   }
+
+  setIsLoading(false);
+}
+
+async function saveContent(article, dispatch) {
+  await new Promise(r => setTimeout(r, 500));
+  await storeContent(article);
+  dispatch(saveArticle(article.id));
+}
+
+async function deleteContent(article, dispatch) {
+  await new Promise(r => setTimeout(r, 500));
+  await clearContent(article);
+  dispatch(deleteArticle(article.id));
 }
 
 function ContentCard(props) {
@@ -115,10 +99,10 @@ function ContentCard(props) {
   const theme = useTheme();
 
   const isSaved = props.savedArticleIds.includes(props.article.id);
-  const [saveState, setSaveState] = React.useState(isSaved ? SaveState.SAVED : SaveState.CAN_SAVE);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const getButtonIcon = () => {
-    if (saveState === SaveState.PROGRESS)
+    if (isLoading)
       return <CircularProgress fontSize="large" />;
     if (isSaved)
       return <CheckIcon fontSize="large" />;
@@ -152,7 +136,7 @@ function ContentCard(props) {
           <Button 
               color="primary"
               style={{ backgroundColor: 'transparent', padding: theme.spacing(1), minWidth: 0 }}
-              onClick={() => handleClick(props.article, saveState, setSaveState, props.dispatch)}
+              onClick={() => !isLoading && handleClick(props.article, isSaved, setIsLoading, props.dispatch)}
           >
             {getButtonIcon()}
           </Button>

@@ -5,9 +5,11 @@ import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Zoom from '@material-ui/core/Zoom';
 import AddCustomContentForm from './AddCustomContentForm';
-import { addArticles } from '../redux/actions';
+import { addArticles, deleteArticle } from '../redux/actions';
+import { clearAll } from '../storage/content_cache';
 
 const useStyles = makeStyles(theme => ({
   fabMore: {
@@ -20,6 +22,11 @@ const useStyles = makeStyles(theme => ({
     transform: 'rotate(90deg)',
   },
   fabRefresh: {
+    position: 'fixed',
+    bottom: theme.spacing(25),
+    right: theme.spacing(5),
+  },
+  fabDelete: {
     position: 'fixed',
     bottom: theme.spacing(19),
     right: theme.spacing(5),
@@ -36,9 +43,15 @@ function SideFab(props) {
   const [open, setOpen] = React.useState(false);
   const [more, setMore] = React.useState(false);
 
-  function handleClick() {
+  function handleAdd() {
     setMore(false);
     setOpen(true);
+  }
+
+  async function handleDelete(dispatch) {
+    const allIds = await clearAll();
+    allIds.forEach(id => dispatch(deleteArticle(id)));
+    setMore(false);
   }
 
   return (
@@ -59,6 +72,21 @@ function SideFab(props) {
           <RefreshIcon />
         </Fab>
       </Zoom>
+
+      <Zoom
+        key='delete'
+        in={more}
+        unmountOnExit
+      >
+        <Fab 
+            aria-label="Delete"
+            className={classes.fabDelete}
+            size="small"
+            onClick={() => handleDelete(props.dispatch)}
+        >
+          <DeleteIcon />
+        </Fab>
+      </Zoom>
   
       <Zoom
         key='add'
@@ -69,8 +97,7 @@ function SideFab(props) {
             aria-label="Add"
             className={classes.fabAdd}
             size="small"
-            color="secondary"
-            onClick={handleClick}
+            onClick={handleAdd}
         >
           <AddIcon />
         </Fab>
