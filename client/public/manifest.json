@@ -1,0 +1,26 @@
+{
+  "short_name": "Sad Chonks",
+  "name": "Sad Chonks",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "/kitteh-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/kitteh-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/saved",
+  "background_color": "#1976d2",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#1976d2"
+}

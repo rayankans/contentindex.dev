@@ -103,7 +103,7 @@ async function onAdd(category, onClose, dispatch, showSnackbar) {
     title,
     description,
     type: category,
-    url: '/customcontent/' + id,
+    url: null,
     thumbnail: iconUrl,
     permalink: null,
   };

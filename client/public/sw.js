@@ -1,13 +1,17 @@
+// Import the default react SW that caches content.
+importScripts('service-worker.js');
+
 self.addEventListener('install', event => {
-  event.waitUntil(skipWaiting());
+  event.waitUntil(caches.open('static-content')
+      .then(cache => cache.add('/favicon.png'))
+      .then(() => skipWaiting()));
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(clients.claim());
-});
+self.addEventListener('activate', event => event.waitUntil(clients.claim()));
 
 self.addEventListener('fetch', event => {
-  if (event.request.url.endsWith('?cache')) {
+  if (event.request.url.includes('/content/') ||
+      event.request.url.endsWith('/favicon.png')) {
     event.respondWith(caches.match(event.request.url, {ignoreSearch: true}));
   }
 });

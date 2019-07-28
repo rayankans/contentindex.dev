@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 
 function PhotoMedia(props) {
   const classes = useStyles();
-  return <img alt="" src={`${props.url}?cache`} className={classes.media}/>;
+  return <img alt="" src={`/content/${props.id}`} className={classes.media}/>;
 }
 
 function VideoMedia(props) {
@@ -30,7 +30,7 @@ function VideoMedia(props) {
 
   return (
   <video controls className={classes.media}>
-    <source src={`${props.url}?cache`} type="video/mp4" />
+    <source src={`/content/${props.id}`} type="video/mp4" />
   </video>);
 }
 
@@ -49,6 +49,6 @@ export default function OfflineArticle(props) {
     <div className={classes.root}>
       <h1> {article.title} </h1>
       <h3> {article.description} </h3>
-      {article.type === 'video' ? <VideoMedia url={article.url} /> : <PhotoMedia url={article.url} />}
+      {article.type === 'video' ? <VideoMedia id={article.id} /> : <PhotoMedia id={article.id} />}
     </div>);
 }

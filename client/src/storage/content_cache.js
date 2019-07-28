@@ -3,22 +3,15 @@ import { saveArticle, deleteArticle } from '../redux/actions.js';
 
 const CACHE_NAME = 'content';
 
-function contentIndexId(article) {
-  return JSON.stringify({
-    id: article.id,
-    url: article.url,
-  });
-}
-
 async function writeToCache(article) {
   const cache = await caches.open(CACHE_NAME);
   const response = await fetch(article.url, { mode: 'no-cors' });
-  await cache.put(article.url, response);
+  await cache.put(`/content/${article.id}`, response);
 }
 
 async function clearCache(article) {
   const cache = await caches.open(CACHE_NAME);
-  await cache.delete(article.url);
+  await cache.delete(`/content/${article.id}`);
 }
 
 async function registerContent(article) {
@@ -31,12 +24,12 @@ async function registerContent(article) {
 
   await registration.index.add({
     // The id & url are needed to delete content from the SW.
-    id: contentIndexId(article),
+    id: article.id,
     title: article.title,
     description: article.description,
     category: article.type === 'photo' ? 'article' : article.type,
     iconUrl: article.thumbnail,
-    launchUrl: article.type === 'homepage' ? '/' : `/article/${article.id}/`,
+    launchUrl: article.type === 'homepage' ? '/' : `/article/${article.id}`,
   }); 
 }
 
@@ -48,7 +41,7 @@ async function unregisterContent(article) {
   if (!registration.index)
     return;
 
-  await registration.index.delete(contentIndexId(article));
+  await registration.index.delete(article.id);
 }
 
 export async function storeContent(article) {
@@ -89,7 +82,7 @@ export async function setUpStorage(dispatch) {
   }
 
   const articleIds = getStoredArticles().map(article => article.id);
-  const descriptionIds = descriptions.map(description => JSON.parse(description.id).id);
+  const descriptionIds = descriptions.map(description => description.id);
 
   // Remove items in localStorage that are not in descriptions.
   articleIds.filter(articleId => !descriptionIds.includes(articleId))

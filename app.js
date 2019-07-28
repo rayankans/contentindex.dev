@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const port = 6000;
+const port = 6001;
 
 const api = require('./api/api.js');
 
