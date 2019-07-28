@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Popover from '@material-ui/core/Popover';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Zoom from '@material-ui/core/Zoom';
 import AddCustomContentForm from './AddCustomContentForm';
@@ -32,22 +31,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function AddContentButton(props) {
+function SideFab(props) {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
   const [more, setMore] = React.useState(false);
 
-  function handleClick(event) {
+  function handleClick() {
     setMore(false);
-    setAnchorEl(event.currentTarget);
+    setOpen(true);
   }
-
-  function handleClose() {
-    setAnchorEl(null);
-  }
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
 
   return (
     <>
@@ -84,7 +76,7 @@ function AddContentButton(props) {
         </Fab>
       </Zoom>
 
-      <Fab 
+      <Fab
           aria-label="More"
           className={more ? `${classes.fabMore} ${classes.fabMoreClick}` : classes.fabMore}
           color="primary" size="large" 
@@ -93,23 +85,9 @@ function AddContentButton(props) {
         <MoreHorizIcon />
       </Fab>
   
-      <Popover
-        id={id}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-      >
-        <AddCustomContentForm />
-      </Popover>
+      <AddCustomContentForm open={open} onClose={()=>setOpen(false)}/>
     </>
   );
 }
 
-export default connect()(AddContentButton);
+export default connect()(SideFab);
