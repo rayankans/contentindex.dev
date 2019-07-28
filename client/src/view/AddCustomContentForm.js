@@ -12,6 +12,10 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+import CloseIcon from '@material-ui/icons/Close';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import TextField from '@material-ui/core/TextField';
 
@@ -30,6 +34,18 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     width: '99%',
     fontSize: theme.typography.fontSize,
+  },
+  close: {
+    padding: theme.spacing(0.5),
+  },
+  icon: {
+    fontSize: 20,
+    opacity: 0.9,
+    marginRight: theme.spacing(1),
+  },
+  message: {
+    display: 'flex',
+    alignItems: 'center',
   },
 }));
 
@@ -57,7 +73,7 @@ function ContentInput({category}) {
   }
 }
 
-async function onAdd(category, onClose, dispatch) {
+async function onAdd(category, onClose, dispatch, showSnackbar) {
   const id = btoa(Math.random().toString().substr(2));
 
   const titleInput = document.getElementById('content-title');
@@ -87,7 +103,7 @@ async function onAdd(category, onClose, dispatch) {
     title,
     description,
     type: category,
-    url: category === 'homepage' ? '/' : '/article/' + id,
+    url: '/customcontent/' + id,
     thumbnail: iconUrl,
     permalink: null,
   };
@@ -96,17 +112,55 @@ async function onAdd(category, onClose, dispatch) {
     await saveCustomContent(article, response);
     dispatch(saveArticle(article.id));
   } catch (e) {
+    showSnackbar('Failed to save - ' + e.message);
     return;
   }
 
+  showSnackbar('Content saved!');
   onClose();
+}
+
+function FormSnackbar(props) {
+  const classes = useStyles();
+
+  return (
+    <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={props.open}
+        autoHideDuration={3000}
+        onClose={props.handleClose}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={
+          <span id="message-id" className={classes.message}>
+            <InfoIcon className={classes.icon}/>
+            {props.message}
+          </span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="close"
+            color="inherit"
+            className={classes.close}
+            onClick={props.handleClose}
+          >
+            <CloseIcon />
+          </IconButton>,
+        ]}
+      />);
 }
 
 function AddCustomContentForm(props) {
   const classes = useStyles();
   const [category, setCategory] = React.useState('homepage');
+  const [snackbar, setSnackbar] = React.useState({open: false, message: null});
 
   return (
+    <>
     <Dialog open={props.open} onClose={props.onClose} aria-labelledby="add-content-title">
       <DialogTitle id="add-content-title">Add Custom Content</DialogTitle>
       <DialogContent>
@@ -162,11 +216,22 @@ function AddCustomContentForm(props) {
         <Button onClick={props.onClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => onAdd(category, props.onClose, props.dispatch)} color="primary">
+        <Button
+            onClick={ 
+              () => onAdd(category, props.onClose, props.dispatch,
+                          message => setSnackbar({ open: true, message }))}
+            color="primary"
+        >
           Add
         </Button>
       </DialogActions>
     </Dialog>
+    <FormSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        handleClose={() => setSnackbar({open: false, message: null})}
+    />
+    </>
   );
 }
 

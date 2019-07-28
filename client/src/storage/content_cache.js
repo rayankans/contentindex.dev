@@ -36,7 +36,7 @@ async function registerContent(article) {
     description: article.description,
     category: article.type === 'photo' ? 'article' : article.type,
     iconUrl: article.thumbnail,
-    launchUrl: `/article/${article.id}/`,
+    launchUrl: article.type === 'homepage' ? '/' : `/article/${article.id}/`,
   }); 
 }
 
@@ -99,8 +99,10 @@ export async function setUpStorage(dispatch) {
             });
 }
 
-export async function saveCustomContent(article, response) {
-  const cache = await caches.open(CACHE_NAME);
-  await cache.put(article.url, response);
+export async function saveCustomContent(article, responseContent) {
+  if (responseContent) {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(article.url, responseContent);
+  }
   await registerContent(article);
 }
