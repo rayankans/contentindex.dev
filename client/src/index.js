@@ -7,6 +7,7 @@ import OfflineArticle from './view/OfflineArticle';
 import { Provider } from 'react-redux';
 import store from './redux/store.js';
 import { setUpStorage } from './storage/content_cache.js';
+import { deleteArticle } from './redux/actions';
 
 function App() {
   return (
@@ -25,5 +26,13 @@ function App() {
 
 ReactDOM.render(<App />, document.getElementById('root'));
 navigator.serviceWorker.register('/sw.js');
+navigator.serviceWorker.addEventListener('message', event => {
+  if (event.data.type !== 'delete')
+    return;
+  
+  // Received user deletion event from SW.
+  localStorage.removeItem(event.data.id);
+  store.dispatch(deleteArticle(event.data.id));
+});
 
 setUpStorage(store.dispatch);

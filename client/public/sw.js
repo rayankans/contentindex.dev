@@ -16,3 +16,22 @@ self.addEventListener('fetch', event => {
     event.respondWith(caches.match(event.request.url, {ignoreSearch: true}));
   }
 });
+
+async function notifyWindowOfDelete(id) {
+  const matchedClients = await clients.matchAll({type: 'window'});
+  for (const client of matchedClients) {
+    client.postMessage({type: 'delete', id});
+  }
+}
+
+self.addEventListener('contentdelete', event => {
+  event.waitUntil(
+    // TODO: Don't hardcode the cache name.
+    caches.open('content').then(cache => {
+      return Promise.all([
+        cache.delete(`/icon/${event.id}`),
+        cache.delete(`/content/${event.id}`),
+        // If there is no window available, the id will be cleared on start-up.
+        notifyWindowOfDelete(event.id),
+      ])}));
+});
