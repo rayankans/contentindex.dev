@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
   },
   media: {
-    width: '100%',
+    maxWidth: '90%',
     maxHeight: '70vh',
     borderRadius: '5px',
   },
@@ -50,7 +50,7 @@ function MediaCard(props) {
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
+    <Card>
       <CardContent className={classes.title}>
         <Typography variant="h5" component="h2">
           {props.article.title}
@@ -116,7 +116,7 @@ function ArticleCard(props) {
         </Typography>
       </CardContent>
       <CardMedia>
-         <img alt="" width={256} height={256} src={`/icon/${props.article.id}`} />
+         <img alt="" width={256} height={256} src={`/icon/${props.article.id}`} style={{borderRadius: '5px'}} />
       </CardMedia>
       <CardContent style={{textAlign: 'left'}}>
         {text.split('\n').map(line =>  <Typography paragraph> {line} </Typography>)}
