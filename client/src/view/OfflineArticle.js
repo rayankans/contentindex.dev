@@ -1,18 +1,18 @@
 import React from 'react';
+import { Redirect, withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   root: {
     textAlign: 'center',
     paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
     [theme.breakpoints.up('md')]: {
       paddingLeft: '20vw',
       paddingRight: '20vw',
@@ -35,14 +35,14 @@ const useStyles = makeStyles(theme => ({
 
 function PhotoMedia(props) {
   const classes = useStyles();
-  return <img alt="" src={`/content/${props.id}`} className={classes.media}/>;
+  return <img alt="" src={props.src} className={classes.media}/>;
 }
 
 function VideoMedia(props) {
   const classes = useStyles();
   return (
     <video controls className={classes.media}>
-      <source src={`/content/${props.id}`} type="video/mp4" />
+      <source src={props.src} type="video/mp4" />
     </video>);
 }
 
@@ -59,13 +59,11 @@ function MediaCard(props) {
           {props.article.description}
         </Typography>
       </CardContent>
-      <CardActionArea>
-        <CardMedia>
-          {props.article.type === 'photo'
-              ? <PhotoMedia id={props.article.id} />
-              : <VideoMedia id={props.article.id} />}
-        </CardMedia>
-      </CardActionArea>
+      <CardMedia>
+        {props.article.type === 'photo'
+            ? <PhotoMedia src={`/content/${props.article.id}`} />
+            : <VideoMedia src={`/content/${props.article.id}`} />}
+      </CardMedia>
       <CardActions>
         <Button 
             size="small" color="primary" disabled={!Boolean(props.article.permalink)}
@@ -78,7 +76,56 @@ function MediaCard(props) {
   );
 }
 
-export default function OfflineArticle(props) {
+function Error() {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      <Typography variant="h2" className={classes.shrug}>
+        ¯\_(ツ)_/¯
+      </Typography>
+      <Typography variant="subtitle1">
+        Something went wrong.
+      </Typography>
+    </div>
+  );
+}
+
+function ArticleCard(props) {
+  const classes = useStyles();
+
+  const [text, setText] = React.useState('');
+
+  caches.open('content')
+    .then(cache => cache.match(`/content/${props.article.id}`))
+    .then(response => response.text())
+    .then(text => setText(text))
+    .catch(() => setText(null));
+
+  if (text === null) {
+    return <Error />;
+  }
+
+  return (
+    <Card className={classes.card}>
+      <CardContent className={classes.title}>
+        <Typography variant="h5" component="h2">
+          {props.article.title}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="p">
+          {props.article.description}
+        </Typography>
+      </CardContent>
+      <CardMedia>
+         <img alt="" width={256} height={256} src={`/icon/${props.article.id}`} />
+      </CardMedia>
+      <CardContent style={{textAlign: 'left'}}>
+        {text.split('\n').map(line =>  <Typography paragraph> {line} </Typography>)}
+      </CardContent>
+    </Card>
+  );
+}
+
+function OfflineArticle(props) {
   const classes = useStyles();
 
   const id = props.match.params[0].endsWith('/')
@@ -86,11 +133,19 @@ export default function OfflineArticle(props) {
       : props.match.params[0];
   const article = JSON.parse(localStorage.getItem(id));
 
-  if (!article)
-    return (<h1> 404 </h1>);
+  if (!article) {
+    return <Error />;
+  }
+
+  if (article.type === 'homepage') {
+    return <Redirect to="/" />;
+  }
 
   return (
     <div className={classes.root}>
-      <MediaCard article={article} />
+      {['photo', 'video'].includes(article.type) && <MediaCard article={article} />}
+      {['article'].includes(article.type) && <ArticleCard article={article} />}
     </div>);
 }
+
+export default withRouter(OfflineArticle);
