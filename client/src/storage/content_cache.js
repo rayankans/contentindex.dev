@@ -22,10 +22,8 @@ async function clearCache(article) {
 async function registerContent(article) {
   const registration = await navigator.serviceWorker.ready;
   
-  if (!registration.index) {
-    localStorage.setItem(article.id, JSON.stringify(article));
+  if (!registration.index)
     return;
-  }
 
   await registration.index.add({
     // The id & url are needed to delete content from the SW.
@@ -36,13 +34,9 @@ async function registerContent(article) {
     icons: [{src: article.thumbnail}],
     launchUrl: article.type === 'homepage' ? '/' : `/article/${article.id}`,
   });
-
-  localStorage.setItem(article.id, JSON.stringify(article));
 }
 
 async function unregisterContent(article) {
-  localStorage.removeItem(article.id);
-
   const registration = await navigator.serviceWorker.ready;
   
   if (!registration.index)
@@ -56,6 +50,8 @@ export async function storeContent(article) {
     writeToCache(article),
     registerContent(article),
   ]);
+
+  localStorage.setItem(article.id, JSON.stringify(article));
 }
 
 export async function clearContent(article) {
@@ -63,6 +59,8 @@ export async function clearContent(article) {
     clearCache(article),
     unregisterContent(article),
   ]);
+
+  localStorage.removeItem(article.id);
 }
 
 export function getStoredArticles() {
@@ -82,7 +80,7 @@ export async function setUpStorage(dispatch) {
     return;
   }
 
-  const descriptions = await registration.index.getDescriptions();
+  const descriptions = await registration.index.getAll();
   if (descriptions.length === localStorage.length) {
     // nothing to do here.
     return;
