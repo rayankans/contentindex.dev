@@ -1,5 +1,5 @@
-
-import { saveArticle, deleteArticle } from '../redux/actions.js';
+import * as idb from 'idb-keyval';
+import { saveArticle } from '../redux/actions.js';
 
 const CACHE_NAME = 'content';
 
@@ -25,15 +25,20 @@ async function registerContent(article) {
   if (!registration.index)
     return;
 
-  await registration.index.add({
-    // The id & url are needed to delete content from the SW.
-    id: article.id,
-    title: article.title,
-    description: article.description,
-    category: article.type === 'photo' ? 'article' : article.type,
-    icons: [{src: article.thumbnail}],
-    launchUrl: article.type === 'homepage' ? '/' : `/article/${article.id}`,
-  });
+  try {
+    await registration.index.add({
+      // The id & url are needed to delete content from the SW.
+      id: article.id,
+      title: article.title,
+      description: article.description,
+      category: article.type === 'photo' ? 'article' : article.type,
+      icons: [{src: article.thumbnail}],
+      launchUrl: article.type === 'homepage' ? '/' : `/article/${article.id}`,
+    });
+  } catch (e) {
+    // API is still experimental.
+    console.log('Failed to register content: ', e.message);
+  }
 }
 
 async function unregisterContent(article) {
@@ -51,7 +56,7 @@ export async function storeContent(article) {
     registerContent(article),
   ]);
 
-  localStorage.setItem(article.id, JSON.stringify(article));
+  await idb.set(article.id, JSON.stringify(article));
 }
 
 export async function clearContent(article) {
@@ -60,41 +65,24 @@ export async function clearContent(article) {
     unregisterContent(article),
   ]);
 
-  localStorage.removeItem(article.id);
+  await idb.del(article.id);
 }
 
-export function getStoredArticles() {
-  const articles = [];
-  for (let i = 0; i < localStorage.length; i++)
-    articles.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
-  return articles;
+export async function getStoredArticles() {
+  const keys = await idb.keys();
+  const articles = await Promise.all(keys.map(k => idb.get(k)));
+  return articles.map(a => JSON.parse(a));
 }
 
 export async function setUpStorage(dispatch) {
-  getStoredArticles().forEach(article => dispatch(saveArticle(article.id)));
-
-  const registration = await navigator.serviceWorker.ready;
-
-  if (!registration.index) {
-    // nothing to do here.
-    return;
+  // Migrate stuff from localStorage to idb.
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    await idb.set(key, localStorage.getItem(key));
   }
+  localStorage.clear();
 
-  const descriptions = await registration.index.getAll();
-  if (descriptions.length === localStorage.length) {
-    // nothing to do here.
-    return;
-  }
-
-  const articleIds = getStoredArticles().map(article => article.id);
-  const descriptionIds = descriptions.map(description => description.id);
-
-  // Remove items in localStorage that are not in descriptions.
-  articleIds.filter(articleId => !descriptionIds.includes(articleId))
-            .forEach(deletedId => {
-              localStorage.removeItem(deletedId);
-              dispatch(deleteArticle(deletedId));
-            });
+  (await getStoredArticles()).forEach(article => dispatch(saveArticle(article.id)));
 }
 
 export async function saveCustomContent(article, responseContent) {
@@ -108,12 +96,11 @@ export async function saveCustomContent(article, responseContent) {
 export async function clearAll() {
   await caches.delete(CACHE_NAME);
 
-  const allIds = getStoredArticles().map(article => article.id);
-
+  const allIds = await idb.keys();
   const registration = await navigator.serviceWorker.ready;
   if (registration.index)
     await Promise.all(allIds.map(id => registration.index.delete(id)));
 
-  localStorage.clear();
+  await idb.clear();
   return allIds;
 }

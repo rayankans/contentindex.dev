@@ -27,8 +27,14 @@ function Shrug() {
 }
 
 export default function SavedContentView() {
-  const articles = getStoredArticles();
-  if (!articles.length) {
+  const [articles, setArticles] = React.useState(null);
+  React.useEffect(() => {
+    (async () => setArticles(await getStoredArticles()))();
+  }, []);
+
+  if (articles === null) {
+    return <></>;
+  } else if (!articles.length) {
     return <Shrug />
   } else {
     return <ContentCardGrid articles={articles} />

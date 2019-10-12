@@ -1,5 +1,6 @@
 // Import the default react SW that caches content.
 importScripts('service-worker.js');
+importScripts('/util/idb-keyval-iife.min.js');
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open('static-content')
@@ -21,6 +22,7 @@ async function notifyWindowOfDelete(id) {
   const matchedClients = await clients.matchAll({type: 'window'});
   for (const client of matchedClients) {
     client.postMessage({type: 'delete', id});
+    return;  // Only notify one window.
   }
 }
 
@@ -31,7 +33,7 @@ self.addEventListener('contentdelete', event => {
       return Promise.all([
         cache.delete(`/icon/${event.id}`),
         cache.delete(`/content/${event.id}`),
-        // If there is no window available, the id will be cleared on start-up.
+        idbKeyval.del(event.id),
         notifyWindowOfDelete(event.id),
       ])}));
 });

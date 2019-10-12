@@ -8,6 +8,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
+import * as idb from 'idb-keyval';
+
 const useStyles = makeStyles(theme => ({
   root: {
     textAlign: 'center',
@@ -131,7 +133,19 @@ function OfflineArticle(props) {
   const id = props.match.params[0].endsWith('/')
       ? props.match.params[0].slice(0, -1)
       : props.match.params[0];
-  const article = JSON.parse(localStorage.getItem(id));
+
+  const [article, setArticle] = React.useState('loading');
+  React.useEffect(() => {
+    (async () => {
+      const serArticle = await idb.get(id);
+      if (serArticle)
+        setArticle(JSON.parse(serArticle));
+    })();
+  }, [id]);
+
+  if (article === 'loading') {
+    return <></>;
+  }
 
   if (!article) {
     return <Error />;

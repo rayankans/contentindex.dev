@@ -31,7 +31,6 @@ navigator.serviceWorker.addEventListener('message', event => {
     return;
   
   // Received user deletion event from SW.
-  localStorage.removeItem(event.data.id);
   store.dispatch(deleteArticle(event.data.id));
 });
 
