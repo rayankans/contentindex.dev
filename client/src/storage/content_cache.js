@@ -82,7 +82,7 @@ export async function setUpStorage(dispatch) {
   }
   localStorage.clear();
 
-  (await getStoredArticles()).forEach(article => dispatch(saveArticle(article.id)));
+  (await getStoredArticles()).forEach(article => dispatch(saveArticle(article)));
 }
 
 export async function saveCustomContent(article, responseContent) {
@@ -91,6 +91,7 @@ export async function saveCustomContent(article, responseContent) {
     await cache.put(`/content/${article.id}`, responseContent);
   await cache.put(`/icon/${article.id}`, await fetch(article.thumbnail, { mode: 'no-cors' }));
   await registerContent(article);
+  await idb.set(article.id, JSON.stringify(article));
 }
 
 export async function clearAll() {

@@ -14,21 +14,21 @@ function fetchedArticles(state = [], action) {
   return [...state].concat(action.articles);
 }
 
-function savedArticleIds(state = [], action) {
+function savedArticles(state = [], action) {
   if (action.type === SAVE_ARTICLE) {
     const newState = [...state];
-    newState.push(action.id);
+    newState.push(action.article);
     return newState;
   }
 
   if (action.type === DELETE_ARTICLE) {
-    const savedIds = [];
-    for (const id of state) {
-      if (id !== action.id) {
-        savedIds.push(id);
+    const articles = [];
+    for (const article of state) {
+      if (article.id !== action.id) {
+        articles.push(article);
       }
     }
-    return savedIds;
+    return articles;
   }
 
   return state;
@@ -36,5 +36,5 @@ function savedArticleIds(state = [], action) {
 
 export default combineReducers({
   fetchedArticles,
-  savedArticleIds,
+  savedArticles,
 });

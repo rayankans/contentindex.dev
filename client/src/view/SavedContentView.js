@@ -1,9 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import ContentCardGrid from './ContentCardGrid';
-import { getStoredArticles } from '../storage/content_cache.js'
 
 const useStyles = makeStyles(theme => ({
   shrug: {
@@ -26,17 +26,12 @@ function Shrug() {
     </div>);
 }
 
-export default function SavedContentView() {
-  const [articles, setArticles] = React.useState(null);
-  React.useEffect(() => {
-    (async () => setArticles(await getStoredArticles()))();
-  }, []);
-
-  if (articles === null) {
-    return <></>;
-  } else if (!articles.length) {
+function SavedContentView(props) {
+  if (!props.articles.length) {
     return <Shrug />
   } else {
-    return <ContentCardGrid articles={articles} />
+    return <ContentCardGrid articles={props.articles} />
   }
 }
+
+export default connect(state => ({articles: state.savedArticles}))(SavedContentView);

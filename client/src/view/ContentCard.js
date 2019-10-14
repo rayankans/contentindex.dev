@@ -72,10 +72,11 @@ async function handleClick(article, isSaved, setIsLoading, dispatch) {
   setIsLoading(true);
 
   try {
-    if (isSaved)
+    if (isSaved) {
       await deleteContent(article, dispatch);
-    else
+    } else {
       await saveContent(article, dispatch);
+    }
   } catch (e) {
     console.log(e);
   }
@@ -86,20 +87,20 @@ async function handleClick(article, isSaved, setIsLoading, dispatch) {
 async function saveContent(article, dispatch) {
   await new Promise(r => setTimeout(r, 500));
   await storeContent(article);
-  dispatch(saveArticle(article.id));
+  dispatch(saveArticle(article));
 }
 
 async function deleteContent(article, dispatch) {
   await new Promise(r => setTimeout(r, 500));
   await clearContent(article);
-  dispatch(deleteArticle(article.id));
+  setTimeout(() => dispatch(deleteArticle(article.id), 0));
 }
 
 function ContentCard(props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const isSaved = props.savedArticleIds.includes(props.article.id);
+  const isSaved = props.savedArticles.map(a => a.id).includes(props.article.id);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const getButtonIcon = () => {
@@ -146,4 +147,4 @@ function ContentCard(props) {
   );
 }
 
-export default connect(state => ({savedArticleIds: state.savedArticleIds}))(withRouter(ContentCard));
+export default connect(state => ({savedArticles: state.savedArticles}))(withRouter(ContentCard));

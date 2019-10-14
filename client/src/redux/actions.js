@@ -10,10 +10,10 @@ export function addArticles(articles) {
   };
 }
 
-export function saveArticle(id) {
+export function saveArticle(article) {
   return {
     type: SAVE_ARTICLE,
-    id,
+    article,
   };
 }
 

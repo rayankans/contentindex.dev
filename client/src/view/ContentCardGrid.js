@@ -29,7 +29,7 @@ export default function ContentCards(props) {
     <Grid item xs={12}>
       <Grid container justify="center" spacing={4}>
         {props.articles.map((article, i) => (
-          <Grid key={i} item xs={12} lg={6}>
+          <Grid key={`${article.id}_${i}`} item xs={12} lg={6}>
             <ContentCard article={article} />
           </Grid>
         ))}

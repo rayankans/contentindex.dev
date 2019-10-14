@@ -121,7 +121,7 @@ function ArticleCard(props) {
          <img alt="" width={256} height={256} src={`/icon/${props.article.id}`} style={{borderRadius: '5px'}} />
       </CardMedia>
       <CardContent style={{textAlign: 'left'}}>
-        {text.split('\n').map(line =>  <Typography paragraph> {line} </Typography>)}
+        {text.split('\n').map((line, i) =>  <Typography paragraph key={i}> {line} </Typography>)}
       </CardContent>
     </Card>
   );
@@ -140,6 +140,7 @@ function OfflineArticle(props) {
       const serArticle = await idb.get(id);
       if (serArticle)
         setArticle(JSON.parse(serArticle));
+      else setArticle(null);
     })();
   }, [id]);
 

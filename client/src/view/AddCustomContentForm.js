@@ -107,11 +107,10 @@ async function onAdd(category, onClose, dispatch, showSnackbar) {
     thumbnail: iconUrl,
     permalink: null,
   };
-  console.log(article);
 
   try {
     await saveCustomContent(article, response);
-    dispatch(saveArticle(article.id));
+    dispatch(saveArticle(article));
   } catch (e) {
     showSnackbar('Failed to save - ' + e.message);
     return;

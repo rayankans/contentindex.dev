@@ -72,7 +72,7 @@ function FullWidthTabs(props) {
           <NewContentView articles={[]} />
         </TabContainer>
         <TabContainer dir={theme.direction}>
-          <SavedContentView />
+          <SavedContentView articles={[]} />
         </TabContainer>
       </SwipeableViews>
       <SideFab showRefresh={value === 0}/>
