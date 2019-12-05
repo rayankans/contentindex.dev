@@ -22,5 +22,19 @@
   "background_color": "#3f51b5",
   "display": "standalone",
   "scope": "/",
-  "theme_color": "#3f51b5"
+  "theme_color": "#3f51b5",
+  "shortcuts": [
+    {
+      "name": "New Chonks",
+      "short_name": "New",
+      "url": "/?shortcut",
+      "icons": [{"src": "/favicon.png"}]
+    },
+    {
+      "name": "Saved Chonks",
+      "short_name": "Saved",
+      "url": "/saved?shortcut",
+      "icons": [{"src": "/favicon.png"}]
+    }
+  ]
 }
