@@ -28,13 +28,13 @@
       "name": "New Chonks",
       "short_name": "New",
       "url": "/?shortcut",
-      "icons": [{"src": "/favicon.png"}]
+      "icons": [{"src": "/favicon.png", "sizes": "128x128"}]
     },
     {
       "name": "Saved Chonks",
       "short_name": "Saved",
       "url": "/saved?shortcut",
-      "icons": [{"src": "/favicon.png"}]
+      "icons": [{"src": "/favicon.png", "sizes": "128x128"}]
     }
   ]
 }
