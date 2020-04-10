@@ -7,6 +7,10 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Home';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import NotificationsOnIcon from '@material-ui/icons/Notifications';
+
+import { isPushSupported, isPushEnabled, handlePushToggle } from './storage/push_manager.js';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,7 +37,10 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       display: 'none',
     },
-  }
+  },
+  notificationButton: {
+    margin: theme.spacing(0),
+  },
 }));
 
 function GitHubIcon() {
@@ -53,6 +60,17 @@ function SpecIcon() {
 function TopAppBar(props) {
   const classes = useStyles();
 
+  const [hidePush, setHidePush] = React.useState(true);
+  const [notifOn, setNotifOn] = React.useState(false);
+
+  React.useEffect(() => {
+    isPushSupported().then(supported => setHidePush(!supported));
+  });
+
+  React.useEffect(() => {
+    isPushEnabled().then(enabled => setNotifOn(enabled));
+  }, [notifOn]);
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -69,8 +87,8 @@ function TopAppBar(props) {
             Content Index API
           </Typography>
           <IconButton 
-              edge="end" className={classes.iconButton} color="inherit" aria-label="Menu"
-              onClick={() => window.open('https://github.com/rknoll/content-index', '_blank')}
+              edge="end" className={classes.iconButton} color="inherit" aria-label="GitHub"
+              onClick={() => window.open('https://github.com/wicg/content-index', '_blank')}
           >
             <SpecIcon />
           </IconButton>
@@ -80,6 +98,12 @@ function TopAppBar(props) {
           >
             <GitHubIcon />
           </IconButton>
+          {!hidePush && <IconButton
+              edge="end" className={classes.notificationButton} color="inherit" aria-label="Notifications"
+              onClick={() => handlePushToggle(notifOn)}
+            >
+              {notifOn ? <NotificationsOnIcon /> : <NotificationsOffIcon />}
+          </IconButton>} 
         </Toolbar>
       </AppBar>
     </div>
