@@ -1,4 +1,4 @@
-
+const PUBLIC_KEY = 'BOj7Q5zTq3d_TZ7MofKkMBQW-p_MJ4kU_1Ue9x6y4GGHqssMgxvFkkiX9ULlOy2XKBdD1LX9gStc-uHm_2RrHXw';
 let isToggleInFlight = false;
 
 export async function isPushSupported() {
@@ -42,12 +42,14 @@ async function activatePush() {
     return false;
   
   const sw = await navigator.serviceWorker.ready;
-  const pushSubscription = {'asd': 43};/*await sw.pushManager.subscribe({
+  const pushSubscription = await sw.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array('BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U'),
-  });*/
+    applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY),
+  });
 
-  const responseData = await fetch('/api/save_subscription', {
+  console.log(JSON.stringify(pushSubscription));
+
+  const response = await fetch('/api/save_subscription', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -55,9 +57,9 @@ async function activatePush() {
     body: JSON.stringify(pushSubscription),
   });
 
-  return responseData.data && responseData.data.success;
+  return response.data && response.data.success;
 }
 
 async function deactivatePush() {
-
+  await activatePush();
 }

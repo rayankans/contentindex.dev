@@ -37,3 +37,11 @@ self.addEventListener('contentdelete', event => {
         notifyWindowOfDelete(event.id),
       ])}));
 });
+
+self.addEventListener('push', async event => {
+  const title = event.data.text();
+  const options = {
+    body: 'Simple piece of body text.\nSecond line of body text :)',
+  };
+  self.registration.showNotification(title, options);
+});
