@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "idb-keyval": "^3.2.0",
     "node-fetch": "^2.6.0",
