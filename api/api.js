@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const { getContent } = require('./get_content.js');
-const { saveSubscription, deleteSubscription } = require('./subscription_manager.js')
+const { saveSubscription, deleteSubscription } = require('./subscription_manager.js');
 
 const router = express.Router();
 const jsonParser = bodyParser.json();

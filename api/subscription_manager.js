@@ -15,9 +15,12 @@ webpush.setVapidDetails(
 
 exports.saveSubscription = async function(subscriptionData) {
   await database.saveSubscription(subscriptionData);
-  webpush.sendNotification(subscriptionData, JSON.stringify({'data': '!!!!!!!!'}));
 }
 
 exports.deleteSubscription = async function(subscriptionData) {
   await database.deleteSubscription(subscriptionData);
+}
+
+exports.sendNotification = function(subscription, data) {
+  webpush.sendNotification(subscription, data);
 }

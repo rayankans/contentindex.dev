@@ -40,3 +40,15 @@ exports.deleteSubscription = async function(pushSubscription) {
     });
   });
 };
+
+exports.getAllSubscriptions = async function() {
+  return await new Promise((s, f) => {
+    pool.query('SELECT subscription FROM subscriptions', (error, results) => {
+      if (error) {
+        f();
+        return;
+      }
+      s(results.map(result => JSON.parse(result.subscription)));
+    });
+  });
+}
