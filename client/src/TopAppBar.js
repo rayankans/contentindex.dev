@@ -100,9 +100,9 @@ function TopAppBar(props) {
           </IconButton>
           {!hidePush && <IconButton
               edge="end" className={classes.notificationButton} color="inherit" aria-label="Notifications"
-              onClick={() => handlePushToggle(notifOn)}
+              onClick={() => handlePushToggle(notifOn, setNotifOn)}
             >
-              {notifOn ? <NotificationsOnIcon /> : <NotificationsOffIcon />}
+              {notifOn ?  <NotificationsOffIcon /> : <NotificationsOnIcon />}
           </IconButton>} 
         </Toolbar>
       </AppBar>

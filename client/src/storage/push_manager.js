@@ -12,16 +12,19 @@ export async function isPushEnabled() {
   return pushSubscription !== null;
 }
 
-export async function handlePushToggle(isPushOn) {
-  console.log(isPushOn);
+export async function handlePushToggle(isPushOn, setIsPushOn) {
   if (isToggleInFlight) return;
   isToggleInFlight = true;
 
-  if (isPushOn) {
-    await deactivatePush();
-  } else {
-    await activatePush();
-  }
+  try {
+    if (isPushOn) {
+      await deactivatePush();
+      setIsPushOn(false);
+    } else {
+      await activatePush();
+      setIsPushOn(true);
+    }
+  } catch (e) {}
 
   isToggleInFlight = false;
 }
@@ -39,7 +42,7 @@ function urlBase64ToUint8Array(base64String) {
 async function activatePush() {
   const permissionResult = await Notification.requestPermission();
   if (permissionResult !== 'granted')
-    return false;
+    return;
   
   const sw = await navigator.serviceWorker.ready;
   const pushSubscription = await sw.pushManager.subscribe({
@@ -47,19 +50,32 @@ async function activatePush() {
     applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY),
   });
 
-  console.log(JSON.stringify(pushSubscription));
-
-  const response = await fetch('/api/save_subscription', {
+  await fetch('/api/save_subscription', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(pushSubscription),
-  });
-
-  return response.data && response.data.success;
+  }).then(response => {
+    if (response.status !== 200) {
+      throw new Error('Server error');
+    }
+  }).catch(err => pushSubscription.unsubscribe());
 }
 
 async function deactivatePush() {
-  await activatePush();
+  const sw = await navigator.serviceWorker.ready;
+  const pushSubscription = await sw.pushManager.getSubscription();
+  await fetch('/api/delete_subscription', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(pushSubscription),
+  }).then(response => {
+    if (response.status !== 200) {
+      throw new Error('Server error');
+    }
+    return pushSubscription.unsubscribe();
+  })
 }

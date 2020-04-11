@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const { getContent } = require('./get_content.js');
-const { saveSubscription } = require('./subscription_manager.js')
+const { saveSubscription, deleteSubscription } = require('./subscription_manager.js')
 
 const router = express.Router();
 const jsonParser = bodyParser.json();
@@ -16,8 +16,21 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/save_subscription', jsonParser, async (req, res) => {
-  await saveSubscription(req.body);
-  res.send(JSON.stringify({ data: { success: true } }));
+  try {
+    await saveSubscription(req.body);
+    res.send(JSON.stringify({ data: { success: true } }));
+  } catch (e) {
+    res.status(501).send({ data: { success: false, error: e.message } });
+  }
+});
+
+router.post('/delete_subscription', jsonParser, async (req, res) => {
+  try {
+    await deleteSubscription(req.body);
+    res.send(JSON.stringify({ data: { success: true } }));
+  } catch (e) {
+    res.status(501).send({ data: { success: false, error: e.message } });
+  }
 });
 
 module.exports = router;
