@@ -38,10 +38,41 @@ self.addEventListener('contentdelete', event => {
       ])}));
 });
 
+// TODO: Find a way to de-dup this.
+async function writeToCache(article) {
+  // TODO: Don't hardcode the cache name.
+  const cache = await caches.open('content');
+  const responses = await Promise.all([
+      fetch(article.url, { mode: 'no-cors' }),
+      fetch(article.thumbnail, { mode: 'no-cors' }),
+      idbKeyval.set(article.id, JSON.stringify(article)),
+  ]);
+
+  await Promise.all([
+    cache.put(`/content/${article.id}`, responses[0]),
+    cache.put(`/icon/${article.id}`, responses[1]),
+  ]);
+}
+
 self.addEventListener('push', async event => {
-  const title = event.data.text();
-  const options = {
-    body: 'Simple piece of body text.\nSecond line of body text :)',
-  };
-  self.registration.showNotification(title, options);
+  event.waitUntil((async () => {
+    const payload = event.data.json();
+    console.log(payload);
+    await writeToCache(payload);
+    const options = {
+      body: 'Press F for this sad chonk',
+      icon: payload.thumbnail,
+      data: payload,
+    };
+    await self.registration.showNotification('Look at this sad C H O N K', options);
+  })());
+});
+
+self.addEventListener('notificationclick', event => {
+  const clickedNotification = event.notification;
+  event.waitUntil((async () => {
+    const clientWindow = await clients.openWindow(`/article/${clickedNotification.data.id}`);
+    clickedNotification.close();
+    if (clientWindow) await clientWindow.focus();
+  })());
 });
