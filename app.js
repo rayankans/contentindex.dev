@@ -20,4 +20,4 @@ app.listen(port, () => console.log(`Listening on port ${port}! Mode: ${app.get('
 // Set up cron job for push notifications.
 const CronJob = require('cron').CronJob;
 
-new CronJob('0 * * * * *', () => dailyPush(), null, true, 'GMT');
+new CronJob('0 0 19 * * *', () => dailyPush(), null, true, 'GMT');
