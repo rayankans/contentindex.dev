@@ -21,6 +21,10 @@ exports.deleteSubscription = async function(subscriptionData) {
   await database.deleteSubscription(subscriptionData);
 }
 
-exports.sendNotification = function(subscription, data) {
-  webpush.sendNotification(subscription, data);
+exports.sendNotification = async function(subscription, data) {
+  try {
+    await webpush.sendNotification(subscription, data);
+  } catch (e) {
+    // TODO: Clean-up depending on the error.
+  }
 }

@@ -10,7 +10,8 @@ import MenuIcon from '@material-ui/icons/Home';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsOnIcon from '@material-ui/icons/Notifications';
 
-import { isPushSupported, isPushEnabled, handlePushToggle } from './storage/push_manager.js';
+import SubscriptionDialog from './view/SubscriptionDialog';
+import { isPushSupported, isPushEnabled } from './storage/push_manager.js';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -62,6 +63,7 @@ function TopAppBar(props) {
 
   const [hidePush, setHidePush] = React.useState(true);
   const [notifOn, setNotifOn] = React.useState(false);
+  const [showDialog, setShowDialog] = React.useState(false);
 
   React.useEffect(() => {
     isPushSupported().then(supported => setHidePush(!supported));
@@ -100,11 +102,12 @@ function TopAppBar(props) {
           </IconButton>
           {!hidePush && <IconButton
               edge="end" className={classes.notificationButton} color="inherit" aria-label="Notifications"
-              onClick={() => handlePushToggle(notifOn, setNotifOn)}
+              onClick={() => setShowDialog(true)}
             >
               {notifOn ?  <NotificationsOffIcon /> : <NotificationsOnIcon />}
           </IconButton>} 
         </Toolbar>
+        <SubscriptionDialog notifOn={notifOn} setNotifOn={setNotifOn} activated={showDialog} hide={() => setShowDialog(false)} />
       </AppBar>
     </div>
   );

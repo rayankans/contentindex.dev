@@ -57,7 +57,6 @@ async function writeToCache(article) {
 self.addEventListener('push', async event => {
   event.waitUntil((async () => {
     const payload = event.data.json();
-    console.log(payload);
     await writeToCache(payload);
     const options = {
       body: 'Press F for this sad chonk',
@@ -71,8 +70,7 @@ self.addEventListener('push', async event => {
 self.addEventListener('notificationclick', event => {
   const clickedNotification = event.notification;
   event.waitUntil((async () => {
-    const clientWindow = await clients.openWindow(`/article/${clickedNotification.data.id}`);
+    await clients.openWindow(`/article/${clickedNotification.data.id}`);
     clickedNotification.close();
-    if (clientWindow) await clientWindow.focus();
   })());
 });
