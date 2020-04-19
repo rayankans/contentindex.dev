@@ -34,6 +34,7 @@ async function registerContent(article) {
       category: article.type === 'photo' ? 'article' : article.type,
       icons: [{src: article.thumbnail}],
       launchUrl: article.type === 'homepage' ? '/' : `/article/${article.id}`,
+      url: article.type === 'homepage' ? '/' : `/article/${article.id}`,
     });
   } catch (e) {
     // API is still experimental.
