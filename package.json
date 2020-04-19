@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "npm install && npm install --prefix client && npm run build --prefix client && NODE_ENV=production node app.js",
-    "dev": "concurrently \"npm run start --prefix client\" \"nodemon --ignore client app.js\""
+    "dev": "concurrently \"npm run start --prefix client\" \"nodemon --ignore client app.js\"",
+    "build": "npm install && npm install --prefix client && npm run build --prefix client",
+    "serve": "NODE_ENV=production node app.js && serve -s build"
   },
   "author": "",
   "license": "ISC",

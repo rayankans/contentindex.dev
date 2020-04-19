@@ -1,0 +1,17 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "dev.contentindex",
+    "sha256_cert_fingerprints": [
+      "24:F9:01:1C:82:2F:A7:A5:84:57:BA:43:E4:6B:E5:2C:A5:8B:32:4B:B5:C3:3E:2F:A9:B3:F9:55:EF:3F:94:3E",
+      "EA:97:8C:8F:0A:0B:1F:4E:FE:9C:B2:31:1D:6E:73:FB:2A:42:36:0A:CC:AE:E2:F4:B0:36:EE:7B:C9:2C:A0:79"
+    ]
+  }
+}, {
+  "relation": ["delegate_permission/common.query_webapk"],
+  "target": {
+    "namespace": "web",
+    "site": "https://backgroundfetch.com/manifest.json"
+  }
+}]
